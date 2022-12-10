@@ -30,10 +30,9 @@ impl days::Day for Day {
         let mut signal_strenghs = 0;
         let mut cycle = 1;
         let mut x = 1;
-        const STOP_CYCLES: [i32; 7] = [20, 60, 100, 140, 180, 220, 260];
         for instruction in input {
             cycle += 1;
-            if STOP_CYCLES.contains(&cycle) {
+            if (cycle + 20) % 40 == 0 {
                 signal_strenghs += cycle * x;
             }
             match instruction {
@@ -41,7 +40,7 @@ impl days::Day for Day {
                 Instruction::AddX(n) => {
                     x += n;
                     cycle += 1;
-                    if STOP_CYCLES.contains(&cycle) {
+                    if (cycle + 20) % 40 == 0 {
                         signal_strenghs += cycle * x;
                     }
                 }
