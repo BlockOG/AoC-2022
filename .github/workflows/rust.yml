@@ -25,4 +25,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: advent_of_code
-        path: ./target/release/advent_of_code*
+        path: target/release/advent_of_code*
