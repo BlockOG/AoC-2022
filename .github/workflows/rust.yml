@@ -25,4 +25,6 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: advent_of_code_${{ matrix.os }}
-        path: target/release/advent_of_code[.exe]
+        path: |
+          target/release/advent_of_code
+          target/release/advent_of_code.exe
