@@ -1,3 +1,5 @@
+mod day11;
+
 use colored::*;
 use paste::paste;
 use std::{fs::File, io::Read};
@@ -57,5 +59,5 @@ pub fn run_day(day_num: u8) {
         println!("{}", "Day number must be between 1 and 25".bold().red());
         return;
     }
-    run_days!(day_num, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+    run_days!(day_num, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
 }
