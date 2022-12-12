@@ -1,4 +1,4 @@
-mod day12;
+mod day11;
 
 use colored::*;
 use paste::paste;
@@ -12,11 +12,14 @@ macro_rules! run_days {
             } }
         )+
 
-        match $the_day {
+        return match $the_day {
             $(
                 $day => run_impled_day(paste! { &[<day $day>]::Day {} }, $the_time),
             )+
-            _ => println!("{}", format!("Day {} not implemented yet", $the_day).bold().red())
+            _ => {
+                println!("{}", format!("Day {} not implemented yet", $the_day).bold().red());
+                None
+            }
         }
     }
 }
@@ -30,7 +33,7 @@ pub trait Day {
     fn parse_input(&self, input: &String) -> Self::Input;
 }
 
-fn run_impled_day(day: &impl Day, time: bool) {
+fn run_impled_day(day: &impl Day, time: bool) -> Option<(u128, u128, u128)> {
     let mut input = String::new();
     let input_file_path = format!("inputs/input{}.txt", day.get_num());
     match File::open(&input_file_path) {
@@ -43,7 +46,7 @@ fn run_impled_day(day: &impl Day, time: bool) {
                         .bold()
                         .red()
                 );
-                return;
+                return None;
             }
         },
         Err(_) => {
@@ -53,7 +56,7 @@ fn run_impled_day(day: &impl Day, time: bool) {
                     .bold()
                     .red()
             );
-            return;
+            return None;
         }
     }
     input = input.replace("\r\n", "\n");
@@ -72,30 +75,30 @@ fn run_impled_day(day: &impl Day, time: bool) {
     println!("{} {}", "Part 2:".bold(), day.part2(&parsed_input));
     let elapsed_part2 = start_part2.elapsed().as_nanos();
 
-    if !time {
-        return;
+    if time {
+        println!(
+            "{} {} ms",
+            "Time Parsing:".bold(),
+            elapsed_parsing as f64 / 1_000_000f64
+        );
+        println!(
+            "{} {} ms",
+            "Time Part 1:".bold(),
+            elapsed_part1 as f64 / 1_000_000f64
+        );
+        println!(
+            "{} {} ms",
+            "Time Part 2:".bold(),
+            elapsed_part2 as f64 / 1_000_000f64
+        );
     }
-    println!(
-        "{} {} ms",
-        "Time Parsing:".bold(),
-        elapsed_parsing as f64 / 1_000_000f64
-    );
-    println!(
-        "{} {} ms",
-        "Time Part 1:".bold(),
-        elapsed_part1 as f64 / 1_000_000f64
-    );
-    println!(
-        "{} {} ms",
-        "Time Part 2:".bold(),
-        elapsed_part2 as f64 / 1_000_000f64
-    );
+    Some((elapsed_parsing, elapsed_part1, elapsed_part2))
 }
 
-pub fn run_day(day_num: u8, time: bool) {
+pub fn run_day(day_num: u8, time: bool) -> Option<(u128, u128, u128)> {
     if day_num < 1 || day_num > 25 {
         println!("{}", "Day number must be between 1 and 25".bold().red());
-        return;
+        return None;
     }
     run_days!(day_num, time, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
 }

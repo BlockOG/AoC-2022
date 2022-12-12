@@ -16,13 +16,47 @@ fn main() {
             )
             .required(false),
         )
+        .arg(
+            arg!(
+                -d --totaltime "Time the total execution of days"
+            )
+            .required(false),
+        )
         .get_matches();
 
     let day = matches.get_one::<String>("DAY").unwrap();
     let time = *matches.get_one::<bool>("time").unwrap();
     if day == "all" {
+        let mut total_time = (0, 0, 0);
         for day in 1..=25 {
-            run_day(day, time);
+            let took_time = run_day(day, time);
+            if let Some((parsing, part1, part2)) = took_time {
+                total_time.0 += parsing;
+                total_time.1 += part1;
+                total_time.2 += part2;
+            }
+        }
+        if *matches.get_one::<bool>("totaltime").unwrap() {
+            println!(
+                "{} {} ms",
+                "Total Time Parsing:".bold(),
+                total_time.0 as f64 / 1_000_000f64
+            );
+            println!(
+                "{} {} ms",
+                "Total Time Part 1:".bold(),
+                total_time.1 as f64 / 1_000_000f64
+            );
+            println!(
+                "{} {} ms",
+                "Total Time Part 2:".bold(),
+                total_time.2 as f64 / 1_000_000f64
+            );
+            println!(
+                "{} {} ms",
+                "Total Time:".bold(),
+                (total_time.0 + total_time.1 + total_time.2) as f64 / 1_000_000f64
+            );
         }
         return;
     }
