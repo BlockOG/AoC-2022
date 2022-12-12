@@ -1,4 +1,3 @@
-use core::panic;
 use std::collections::HashMap;
 
 use pathfinding::directed::astar::astar;
@@ -6,35 +5,7 @@ use pathfinding::directed::astar::astar;
 use crate::days;
 
 fn char2elevation(c: char) -> usize {
-    match c {
-        'a' => 0,
-        'b' => 1,
-        'c' => 2,
-        'd' => 3,
-        'e' => 4,
-        'f' => 5,
-        'g' => 6,
-        'h' => 7,
-        'i' => 8,
-        'j' => 9,
-        'k' => 10,
-        'l' => 11,
-        'm' => 12,
-        'n' => 13,
-        'o' => 14,
-        'p' => 15,
-        'q' => 16,
-        'r' => 17,
-        's' => 18,
-        't' => 19,
-        'u' => 20,
-        'v' => 21,
-        'w' => 22,
-        'x' => 23,
-        'y' => 24,
-        'z' => 25,
-        _ => panic!("Invalid char"),
-    }
+    c as usize - 'a' as usize
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -53,23 +24,21 @@ impl Pos {
     }
 
     fn neighbors(&self, grid: &Vec<Vec<usize>>) -> Vec<(Pos, usize)> {
-        let x = self.x;
-        let y = self.y;
-        let next_elevation = grid[x][y] + 1;
+        let next_elevation = grid[self.x][self.y] + 1;
         let mut neighbors = vec![];
-        if x > 0 && grid[x - 1][y] <= next_elevation {
-            neighbors.push(Pos::new(x - 1, y));
+        if self.x > 0 && grid[self.x - 1][self.y] <= next_elevation {
+            neighbors.push((Pos::new(self.x - 1, self.y), 1));
         }
-        if x < grid.len() - 1 && grid[x + 1][y] <= next_elevation {
-            neighbors.push(Pos::new(x + 1, y));
+        if self.x < grid.len() - 1 && grid[self.x + 1][self.y] <= next_elevation {
+            neighbors.push((Pos::new(self.x + 1, self.y), 1));
         }
-        if y > 0 && grid[x][y - 1] <= next_elevation {
-            neighbors.push(Pos::new(x, y - 1));
+        if self.y > 0 && grid[self.x][self.y - 1] <= next_elevation {
+            neighbors.push((Pos::new(self.x, self.y - 1), 1));
         }
-        if y < grid[0].len() - 1 && grid[x][y + 1] <= next_elevation {
-            neighbors.push(Pos::new(x, y + 1));
+        if self.y < grid[0].len() - 1 && grid[self.x][self.y + 1] <= next_elevation {
+            neighbors.push((Pos::new(self.x, self.y + 1), 1));
         }
-        neighbors.into_iter().map(|p| (p, 1)).collect()
+        neighbors
     }
 }
 
