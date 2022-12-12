@@ -22,14 +22,20 @@ fn main() {
             )
             .required(false),
         )
+        .arg(
+            arg!(
+                -p --dontprint "Don't print the output of the days"
+            )
+        )
         .get_matches();
 
     let day = matches.get_one::<String>("DAY").unwrap();
     let time = *matches.get_one::<bool>("time").unwrap();
+    let dont_print = *matches.get_one::<bool>("dontprint").unwrap();
     if day == "all" {
         let mut total_time = (0, 0, 0);
         for day in 1..=25 {
-            let took_time = run_day(day, time);
+            let took_time = run_day(day, time, dont_print);
             if let Some((parsing, part1, part2)) = took_time {
                 total_time.0 += parsing;
                 total_time.1 += part1;
@@ -72,5 +78,6 @@ fn main() {
             }
         },
         time,
+        dont_print
     );
 }
