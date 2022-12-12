@@ -1,77 +1,38 @@
 use core::panic;
+use std::collections::HashMap;
 
 use pathfinding::directed::astar::astar;
 
 use crate::days;
 
-fn next_chars(c: char) -> Vec<char> {
+fn char2elevation(c: char) -> usize {
     match c {
-        'a' => vec!['a', 'b'],
-        'b' => vec!['a', 'b', 'c'],
-        'c' => vec!['a', 'b', 'c', 'd'],
-        'd' => vec!['a', 'b', 'c', 'd', 'e'],
-        'e' => vec!['a', 'b', 'c', 'd', 'e', 'f'],
-        'f' => vec!['a', 'b', 'c', 'd', 'e', 'f', 'g'],
-        'g' => vec!['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
-        'h' => vec!['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'],
-        'i' => vec!['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'],
-        'j' => vec!['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k'],
-        'k' => vec!['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'],
-        'l' => vec![
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-        ],
-        'm' => vec![
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
-        ],
-        'n' => vec![
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
-        ],
-        'o' => vec![
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
-        ],
-        'p' => vec![
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
-        ],
-        'q' => vec![
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
-            'r',
-        ],
-        'r' => vec![
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
-            'r', 's',
-        ],
-        's' => vec![
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
-            'r', 's', 't',
-        ],
-        't' => vec![
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
-            'r', 's', 't', 'u',
-        ],
-        'u' => vec![
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
-            'r', 's', 't', 'u', 'v',
-        ],
-        'v' => vec![
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
-            'r', 's', 't', 'u', 'v', 'w',
-        ],
-        'w' => vec![
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
-            'r', 's', 't', 'u', 'v', 'w', 'x',
-        ],
-        'x' => vec![
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
-            'r', 's', 't', 'u', 'v', 'w', 'x', 'y',
-        ],
-        'y' => vec![
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
-            'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-        ],
-        'z' => vec![
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
-            'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-        ],
+        'a' => 0,
+        'b' => 1,
+        'c' => 2,
+        'd' => 3,
+        'e' => 4,
+        'f' => 5,
+        'g' => 6,
+        'h' => 7,
+        'i' => 8,
+        'j' => 9,
+        'k' => 10,
+        'l' => 11,
+        'm' => 12,
+        'n' => 13,
+        'o' => 14,
+        'p' => 15,
+        'q' => 16,
+        'r' => 17,
+        's' => 18,
+        't' => 19,
+        'u' => 20,
+        'v' => 21,
+        'w' => 22,
+        'x' => 23,
+        'y' => 24,
+        'z' => 25,
         _ => panic!("Invalid char"),
     }
 }
@@ -91,21 +52,21 @@ impl Pos {
         self.x.abs_diff(other.x) + self.y.abs_diff(other.y)
     }
 
-    fn neighbors(&self, grid: Vec<Vec<char>>) -> Vec<(Pos, usize)> {
+    fn neighbors(&self, grid: &Vec<Vec<usize>>) -> Vec<(Pos, usize)> {
         let x = self.x;
         let y = self.y;
-        let next_chars = next_chars(grid[x][y]);
+        let next_elevation = grid[x][y] + 1;
         let mut neighbors = vec![];
-        if x > 0 && next_chars.contains(&grid[x - 1][y]) {
+        if x > 0 && grid[x - 1][y] <= next_elevation {
             neighbors.push(Pos::new(x - 1, y));
         }
-        if x < grid.len() - 1 && next_chars.contains(&grid[x + 1][y]) {
+        if x < grid.len() - 1 && grid[x + 1][y] <= next_elevation {
             neighbors.push(Pos::new(x + 1, y));
         }
-        if y > 0 && next_chars.contains(&grid[x][y - 1]) {
+        if y > 0 && grid[x][y - 1] <= next_elevation {
             neighbors.push(Pos::new(x, y - 1));
         }
-        if y < grid[0].len() - 1 && next_chars.contains(&grid[x][y + 1]) {
+        if y < grid[0].len() - 1 && grid[x][y + 1] <= next_elevation {
             neighbors.push(Pos::new(x, y + 1));
         }
         neighbors.into_iter().map(|p| (p, 1)).collect()
@@ -115,7 +76,7 @@ impl Pos {
 pub struct Day {}
 
 impl days::Day for Day {
-    type Input = (Pos, Pos, Vec<Vec<char>>);
+    type Input = (Pos, Pos, Vec<Vec<usize>>);
 
     fn get_num(&self) -> u8 {
         12
@@ -126,7 +87,7 @@ impl days::Day for Day {
 
         astar(
             start,
-            |&current| current.neighbors(grid.clone()),
+            |&current| current.neighbors(&grid),
             |&current| current.distance(*end),
             |&current| current == *end,
         )
@@ -137,45 +98,54 @@ impl days::Day for Day {
 
     fn part2(&self, input: &Self::Input) -> String {
         let (_, end, grid) = input;
-        let mut distances = vec![];
+        let mut distances = HashMap::new();
 
         for (i, line) in grid.iter().enumerate() {
             for (j, c) in line.iter().enumerate() {
-                if *c == 'a' {
+                if *c == 0 {
                     let start = Pos::new(i, j);
+                    if distances.contains_key(&start) {
+                        continue;
+                    }
                     match astar(
                         &start,
-                        |&current| current.neighbors(grid.clone()),
+                        |&current| current.neighbors(&grid),
                         |&current| current.distance(*end),
                         |&current| current == *end,
                     ) {
-                        Some(path) => distances.push(path.1),
+                        Some((path, length)) => {
+                            for (i, p) in path.into_iter().enumerate() {
+                                if grid[p.x][p.y] == 0 {
+                                    distances.insert(p, length - i);
+                                }
+                            }
+                        },
                         None => (),
                     }
                 }
             }
         }
 
-        distances.iter().min().unwrap().to_string()
+        distances.values().min().unwrap().to_string()
     }
 
     fn parse_input(&self, input: &String) -> Self::Input {
         let mut start = Pos::new(0, 0);
         let mut end = Pos::new(0, 0);
-        let mut grid: Vec<Vec<char>> = vec![];
+        let mut grid: Vec<Vec<usize>> = vec![];
         for (i, line) in input.lines().enumerate() {
             grid.push(vec![]);
             for (j, c) in line.chars().enumerate() {
                 grid[i].push(match c {
                     'S' => {
                         start = Pos::new(i, j);
-                        'a'
+                        0
                     }
                     'E' => {
                         end = Pos::new(i, j);
-                        'z'
+                        25
                     }
-                    _ => c,
+                    _ => char2elevation(c),
                 })
             }
         }
