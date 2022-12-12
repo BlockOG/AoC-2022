@@ -119,7 +119,7 @@ impl days::Day for Day {
                                     distances.insert(p, length - i);
                                 }
                             }
-                        },
+                        }
                         None => (),
                     }
                 }
