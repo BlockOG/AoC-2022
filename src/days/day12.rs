@@ -1,11 +1,14 @@
-use std::collections::HashMap;
-
-use pathfinding::directed::astar::astar;
+use pathfinding::prelude::{astar, dijkstra};
 
 use crate::days;
 
 fn char2elevation(c: char) -> usize {
     c as usize - 'a' as usize
+}
+
+#[inline]
+fn index_grid(index: &Pos, grid: &(Vec<usize>, usize, usize)) -> usize {
+    grid.0[index.x + index.y * grid.1]
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -23,29 +26,57 @@ impl Pos {
         self.x.abs_diff(other.x) + self.y.abs_diff(other.y)
     }
 
-    fn neighbors(&self, grid: &Vec<Vec<usize>>) -> Vec<(Pos, usize)> {
-        let next_elevation = grid[self.x][self.y] + 1;
+    fn predecessors(&self, grid: &(Vec<usize>, usize, usize)) -> Vec<(Pos, usize)> {
+        let next_elevation = index_grid(self, grid) - 1;
         let mut neighbors = vec![];
-        if self.x > 0 && grid[self.x - 1][self.y] <= next_elevation {
+        if self.x > 0 && index_grid(&self.sub_x(1), grid) >= next_elevation {
             neighbors.push((Pos::new(self.x - 1, self.y), 1));
         }
-        if self.x < grid.len() - 1 && grid[self.x + 1][self.y] <= next_elevation {
+        if self.x < grid.1 - 1 && index_grid(&self.add_x(1), grid) >= next_elevation {
             neighbors.push((Pos::new(self.x + 1, self.y), 1));
         }
-        if self.y > 0 && grid[self.x][self.y - 1] <= next_elevation {
+        if self.y > 0 && index_grid(&self.sub_y(1), grid) >= next_elevation {
             neighbors.push((Pos::new(self.x, self.y - 1), 1));
         }
-        if self.y < grid[0].len() - 1 && grid[self.x][self.y + 1] <= next_elevation {
+        if self.y < grid.2 - 1 && index_grid(&self.add_y(1), grid) >= next_elevation {
             neighbors.push((Pos::new(self.x, self.y + 1), 1));
         }
         neighbors
+    }
+
+    fn add_x(&self, x: usize) -> Self {
+        Self {
+            x: self.x + x,
+            y: self.y,
+        }
+    }
+
+    fn sub_x(&self, x: usize) -> Self {
+        Self {
+            x: self.x - x,
+            y: self.y,
+        }
+    }
+
+    fn add_y(&self, y: usize) -> Self {
+        Self {
+            x: self.x,
+            y: self.y + y,
+        }
+    }
+
+    fn sub_y(&self, y: usize) -> Self {
+        Self {
+            x: self.x,
+            y: self.y - y,
+        }
     }
 }
 
 pub struct Day {}
 
 impl days::Day for Day {
-    type Input = (Pos, Pos, Vec<Vec<usize>>);
+    type Input = (Pos, Pos, (Vec<usize>, usize, usize));
 
     fn get_num(&self) -> u8 {
         12
@@ -55,10 +86,10 @@ impl days::Day for Day {
         let (start, end, grid) = input;
 
         astar(
-            start,
-            |&current| current.neighbors(&grid),
-            |&current| current.distance(*end),
-            |&current| current == *end,
+            end,
+            |&current| current.predecessors(&grid),
+            |&current| current.distance(*start),
+            |&current| current == *start,
         )
         .unwrap()
         .1
@@ -67,57 +98,39 @@ impl days::Day for Day {
 
     fn part2(&self, input: &Self::Input) -> String {
         let (_, end, grid) = input;
-        let mut distances = HashMap::new();
 
-        for (i, line) in grid.iter().enumerate() {
-            for (j, c) in line.iter().enumerate() {
-                if *c == 0 {
-                    let start = Pos::new(i, j);
-                    if distances.contains_key(&start) {
-                        continue;
-                    }
-                    match astar(
-                        &start,
-                        |&current| current.neighbors(&grid),
-                        |&current| current.distance(*end),
-                        |&current| current == *end,
-                    ) {
-                        Some((path, length)) => {
-                            for (i, p) in path.into_iter().enumerate() {
-                                if grid[p.x][p.y] == 0 {
-                                    distances.insert(p, length - i);
-                                }
-                            }
-                        }
-                        None => (),
-                    }
-                }
-            }
-        }
-
-        distances.values().min().unwrap().to_string()
+        dijkstra(
+            end,
+            |&current| current.predecessors(&grid),
+            |current| index_grid(current, grid) == 0,
+        )
+        .unwrap()
+        .1
+        .to_string()
     }
 
     fn parse_input(&self, input: &String) -> Self::Input {
         let mut start = Pos::new(0, 0);
         let mut end = Pos::new(0, 0);
-        let mut grid: Vec<Vec<usize>> = vec![];
-        for (i, line) in input.lines().enumerate() {
-            grid.push(vec![]);
-            for (j, c) in line.chars().enumerate() {
-                grid[i].push(match c {
+        let mut grid: Vec<usize> = vec![];
+        let mut width = 0;
+        let height = input.lines().count();
+        for (y, line) in input.lines().enumerate() {
+            for (x, c) in line.chars().enumerate() {
+                grid.push(match c {
                     'S' => {
-                        start = Pos::new(i, j);
+                        start = Pos::new(x, y);
                         0
                     }
                     'E' => {
-                        end = Pos::new(i, j);
+                        end = Pos::new(x, y);
                         25
                     }
                     _ => char2elevation(c),
-                })
+                });
+                width = x + 1;
             }
         }
-        (start, end, grid)
+        (start, end, (grid, width, height))
     }
 }
