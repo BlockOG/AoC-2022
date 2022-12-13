@@ -14,23 +14,29 @@ pub enum Value {
 impl Value {
     fn parsing(input: &mut impl Iterator<Item = char>) -> Self {
         let mut list = vec![];
-        let mut num = String::new();
+        let mut num = -1;
         loop {
             match input.next() {
                 Some('[') => list.push(Value::parsing(input)),
                 Some(']') => break,
                 Some(',') => {
-                    if !num.is_empty() {
-                        list.push(Value::Number(num.parse().unwrap()));
-                        num = String::new();
+                    if num != -1 {
+                        list.push(Value::Number(num));
+                        num = -1;
                     }
                 }
-                Some(c) => num.push(c),
+                Some(c) => {
+                    if num == -1 {
+                        num = 0;
+                    }
+                    num *= 10;
+                    num += c.to_digit(10).unwrap() as i64;
+                },
                 None => break,
             }
         }
-        if !num.is_empty() {
-            list.push(Value::Number(num.parse().unwrap()));
+        if num != -1 {
+            list.push(Value::Number(num));
         }
         Value::List(list)
     }
