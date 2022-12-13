@@ -10,11 +10,11 @@ impl days::Day for Day {
     }
 
     fn part1(&self, input: &Self::Input) -> String {
-        todo!()
+        todo!("Part 1 not implemented yet!")
     }
 
     fn part2(&self, input: &Self::Input) -> String {
-        todo!()
+        todo!("Part 2 not implemented yet!")
     }
 
     fn parse_input(&self, input: &String) -> Self::Input {
