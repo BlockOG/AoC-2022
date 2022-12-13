@@ -15,10 +15,23 @@ impl Value {
     fn parsing(input: &mut impl Iterator<Item = char>) -> Self {
         let mut list = vec![];
         let mut num = -1;
+        let mut stack = vec![];
         loop {
             match input.next() {
-                Some('[') => list.push(Value::parsing(input)),
-                Some(']') => break,
+                Some('[') => {
+                    stack.push(Value::List(list));
+                    list = vec![];
+                },
+                Some(']') => {
+                    if num != -1 {
+                        list.push(Value::Number(num));
+                        num = -1;
+                    }
+                    if let Some(Value::List(mut l)) = stack.pop() {
+                        l.push(Value::List(list));
+                        list = l;
+                    }
+                },
                 Some(',') => {
                     if num != -1 {
                         list.push(Value::Number(num));
