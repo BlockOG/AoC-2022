@@ -45,17 +45,17 @@ fn main() {
         if *matches.get_one::<bool>("totaltime").unwrap() {
             println!(
                 "{} {} ms",
-                "Total Time Parsing:".bold(),
+                "Total Parsing Time:".bold(),
                 total_time.0 as f64 / 1_000_000f64
             );
             println!(
                 "{} {} ms",
-                "Total Time Part 1:".bold(),
+                "Total Part 1 Time:".bold(),
                 total_time.1 as f64 / 1_000_000f64
             );
             println!(
                 "{} {} ms",
-                "Total Time Part 2:".bold(),
+                "Total Part 2 Time:".bold(),
                 total_time.2 as f64 / 1_000_000f64
             );
             println!(

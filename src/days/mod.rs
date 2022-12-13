@@ -84,17 +84,17 @@ fn run_impled_day(day: &impl Day, time: bool, dont_print: bool) -> Option<(u128,
     if time {
         println!(
             "{} {} ms",
-            "Time Parsing:".bold(),
+            "Parsing Time:".bold(),
             elapsed_parsing as f64 / 1_000_000f64
         );
         println!(
             "{} {} ms",
-            "Time Part 1:".bold(),
+            "Part 1 Time:".bold(),
             elapsed_part1 as f64 / 1_000_000f64
         );
         println!(
             "{} {} ms",
-            "Time Part 2:".bold(),
+            "Part 2 Time:".bold(),
             elapsed_part2 as f64 / 1_000_000f64
         );
     }
