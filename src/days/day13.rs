@@ -12,40 +12,33 @@ pub enum Value {
 }
 
 impl Value {
-    fn parsing(input: &mut impl Iterator<Item = char>, next: Option<char>) -> Self {
-        match next {
-            Some(c @ '0'..='9') => {
-                let mut num = c.to_digit(10).unwrap();
-                while let Some(c) = input.next() {
-                    if c.is_digit(10) {
-                        num = num * 10 + c.to_digit(10).unwrap();
-                    } else {
-                        break;
+    fn parsing(input: &mut impl Iterator<Item = char>) -> Self {
+        let mut list = vec![];
+        let mut num = String::new();
+        loop {
+            match input.next() {
+                Some('[') => list.push(Value::parsing(input)),
+                Some(']') => break,
+                Some(',') => {
+                    if !num.is_empty() {
+                        list.push(Value::Number(num.parse().unwrap()));
+                        num = String::new();
                     }
                 }
-                Value::Number(num as i64)
+                Some(c) => num.push(c),
+                None => break,
             }
-            Some('[') => {
-                let mut array = Vec::new();
-                while let Some(c) = input.next() {
-                    if c == ']' {
-                        break;
-                    } else if c == ',' {
-                    } else {
-                        array.push(Value::parsing(input, Some(c)));
-                    }
-                }
-                Value::List(array)
-            }
-            Some(c) => panic!("Unexpected character: {}", c),
-            None => panic!("Unexpected end of input"),
         }
+        if !num.is_empty() {
+            list.push(Value::Number(num.parse().unwrap()));
+        }
+        Value::List(list)
     }
 
     fn parse(input: &str) -> Self {
-        let mut input = input.chars().peekable();
-        let next = input.next();
-        Value::parsing(&mut input, next)
+        let mut input = input.chars();
+        input.next(); // Skip the first [
+        Value::parsing(&mut input)
     }
 }
 
