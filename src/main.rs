@@ -60,13 +60,18 @@ fn main() {
             );
             println!(
                 "{} {} ms",
+                "Total Parts Time:".bold(),
+                (total_time.1 + total_time.2) as f64 / 1_000_000f64
+            );
+            println!(
+                "{} {} ms",
                 "Total Time:".bold(),
                 (total_time.0 + total_time.1 + total_time.2) as f64 / 1_000_000f64
             );
         }
         return;
     }
-    run_day(
+    let total_time = run_day(
         match day.parse::<u8>() {
             Ok(day) => day,
             Err(_) => {
@@ -80,4 +85,18 @@ fn main() {
         time,
         dont_print
     );
+    if let Some((parsing, part1, part2)) = total_time {
+        if *matches.get_one::<bool>("totaltime").unwrap() {
+            println!(
+                "{} {} ms",
+                "Total Parts Time:".bold(),
+                (part1 + part2) as f64 / 1_000_000f64
+            );
+            println!(
+                "{} {} ms",
+                "Total Time:".bold(),
+                (parsing + part1 + part2) as f64 / 1_000_000f64
+            );
+        }
+    }
 }
