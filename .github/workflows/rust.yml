@@ -24,7 +24,7 @@ jobs:
     - name: Archive build
       uses: actions/upload-artifact@v3
       with:
-        name: advent_of_code_${{ matrix.os }}
+        name: advent_of_code_2022_${{ matrix.os }}
         path: |
-          target/release/advent_of_code
-          target/release/advent_of_code.exe
+          target/release/advent_of_code_2022
+          target/release/advent_of_code_2022.exe
