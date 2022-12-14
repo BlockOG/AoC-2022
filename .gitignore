@@ -1,5 +1,5 @@
 /target
 /inputs
 /.cargo
-flamegraph.svg
+flamegraph*.svg
 perf.data*

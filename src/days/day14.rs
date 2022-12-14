@@ -24,11 +24,12 @@ impl Pos {
     }
 
     fn index(&self) -> usize {
-        self.x + self.y * 1000
+        Self::new_index(self.x, self.y)
     }
 
+    #[inline]
     fn new_index(x: usize, y: usize) -> usize {
-        x + y * 1000
+        x + y * 600
     }
 }
 
@@ -54,14 +55,15 @@ impl days::Day for Day {
 
     fn new() -> Self {
         Self {
-            blocks: vec![true; 1000 * 1000],
+            blocks: vec![true; 600 * 200],
             max_y: 0,
             rested_sand: 0,
         }
     }
 
     fn part1(&mut self, _input: &Self::Input) -> String {
-        let mut sand = Pos::new(500, 0);
+        let five_hundred = Pos::new(500, 0);
+        let mut sand = five_hundred;
         while sand.y <= self.max_y {
             if self.blocks[sand.down().index()] {
                 sand = sand.down();
@@ -72,14 +74,15 @@ impl days::Day for Day {
             } else {
                 self.rested_sand += 1;
                 self.blocks[sand.index()] = false;
-                sand = Pos::new(500, 0);
+                sand = five_hundred;
             }
         }
         self.rested_sand.to_string()
     }
 
     fn part2(&mut self, _input: &Self::Input) -> String {
-        let mut sand = Pos::new(500, 0);
+        let five_hundred = Pos::new(500, 0);
+        let mut sand = five_hundred;
         while self.blocks[500] {
             if misses_block(&self.blocks, self.max_y, &sand.down()) {
                 sand = sand.down();
@@ -90,7 +93,7 @@ impl days::Day for Day {
             } else {
                 self.rested_sand += 1;
                 self.blocks[sand.index()] = false;
-                sand = Pos::new(500, 0);
+                sand = five_hundred;
             }
         }
         self.rested_sand.to_string()
