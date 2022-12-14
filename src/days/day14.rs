@@ -2,12 +2,12 @@ use crate::days;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Pos {
-    x: i32,
-    y: i32,
+    x: usize,
+    y: usize,
 }
 
 impl Pos {
-    fn new(x: i32, y: i32) -> Self {
+    fn new(x: usize, y: usize) -> Self {
         Self { x, y }
     }
 
@@ -24,15 +24,15 @@ impl Pos {
     }
 
     fn index(&self) -> usize {
-        (self.y * 1000 + self.x) as usize
+        self.x + self.y * 1000
     }
 
-    fn new_index(x: i32, y: i32) -> usize {
-        (y * 1000 + x) as usize
+    fn new_index(x: usize, y: usize) -> usize {
+        x + y * 1000
     }
 }
 
-fn has_block(blocks: &Vec<bool>, max_y: i32, block: &Pos) -> bool {
+fn misses_block(blocks: &Vec<bool>, max_y: usize, block: &Pos) -> bool {
     if block.y >= max_y + 2 {
         return false;
     }
@@ -41,8 +41,8 @@ fn has_block(blocks: &Vec<bool>, max_y: i32, block: &Pos) -> bool {
 
 pub struct Day {
     blocks: Vec<bool>,
-    max_y: i32,
-    rested_sand: i32,
+    max_y: usize,
+    rested_sand: usize,
 }
 
 impl days::Day for Day {
@@ -81,11 +81,11 @@ impl days::Day for Day {
     fn part2(&mut self, _input: &Self::Input) -> String {
         let mut sand = Pos::new(500, 0);
         while self.blocks[500] {
-            if has_block(&self.blocks, self.max_y, &sand.down()) {
+            if misses_block(&self.blocks, self.max_y, &sand.down()) {
                 sand = sand.down();
-            } else if has_block(&self.blocks, self.max_y, &sand.down_left()) {
+            } else if misses_block(&self.blocks, self.max_y, &sand.down_left()) {
                 sand = sand.down_left();
-            } else if has_block(&self.blocks, self.max_y, &sand.down_right()) {
+            } else if misses_block(&self.blocks, self.max_y, &sand.down_right()) {
                 sand = sand.down_right();
             } else {
                 self.rested_sand += 1;
