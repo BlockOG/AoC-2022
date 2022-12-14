@@ -1,4 +1,4 @@
-mod day13;
+mod day14;
 
 use colored::*;
 use paste::paste;
@@ -14,7 +14,7 @@ macro_rules! run_days {
 
         return match $the_day {
             $(
-                $day => run_impled_day(paste! { &[<day $day>]::Day {} }, $the_time, $the_dont_print),
+                $day => run_impled_day(paste! { &mut [<day $day>]::Day::new() }, $the_time, $the_dont_print),
             )+
             _ => {
                 println!("{}", format!("Day {} not implemented yet", $the_day).bold().red());
@@ -28,12 +28,13 @@ pub trait Day {
     type Input;
 
     fn get_num(&self) -> u8;
-    fn part1(&self, input: &Self::Input) -> String;
-    fn part2(&self, input: &Self::Input) -> String;
-    fn parse_input(&self, input: &String) -> Self::Input;
+    fn new() -> Self;
+    fn part1(&mut self, input: &Self::Input) -> String;
+    fn part2(&mut self, input: &Self::Input) -> String;
+    fn parse_input(&mut self, input: &String) -> Self::Input;
 }
 
-fn run_impled_day(day: &impl Day, time: bool, dont_print: bool) -> Option<(u128, u128, u128)> {
+fn run_impled_day(day: &mut impl Day, time: bool, dont_print: bool) -> Option<(u128, u128, u128)> {
     let mut input = String::new();
     let input_file_path = format!("inputs/input{}.txt", day.get_num());
     match File::open(&input_file_path) {
@@ -106,5 +107,5 @@ pub fn run_day(day_num: u8, time: bool, dont_print: bool) -> Option<(u128, u128,
         println!("{}", "Day number must be between 1 and 25".bold().red());
         return None;
     }
-    run_days!(day_num, time, dont_print, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13);
+    run_days!(day_num, time, dont_print, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14);
 }

@@ -82,7 +82,11 @@ impl days::Day for Day {
         12
     }
 
-    fn part1(&self, input: &Self::Input) -> String {
+    fn new() -> Self {
+        Self {}
+    }
+
+    fn part1(&mut self, input: &Self::Input) -> String {
         let (start, end, grid) = input;
 
         astar(
@@ -96,7 +100,7 @@ impl days::Day for Day {
         .to_string()
     }
 
-    fn part2(&self, input: &Self::Input) -> String {
+    fn part2(&mut self, input: &Self::Input) -> String {
         let (_, end, grid) = input;
 
         dijkstra(
@@ -109,7 +113,7 @@ impl days::Day for Day {
         .to_string()
     }
 
-    fn parse_input(&self, input: &String) -> Self::Input {
+    fn parse_input(&mut self, input: &String) -> Self::Input {
         let mut start = Pos::new(0, 0);
         let mut end = Pos::new(0, 0);
         let mut grid: Vec<usize> = vec![];

@@ -21,7 +21,11 @@ impl days::Day for Day {
         4
     }
 
-    fn part1(&self, input: &Self::Input) -> String {
+    fn new() -> Self {
+        Self {}
+    }
+
+    fn part1(&mut self, input: &Self::Input) -> String {
         let mut contained = 0;
         for (a, b) in input.iter() {
             if any_contains_other(a, b) {
@@ -31,7 +35,7 @@ impl days::Day for Day {
         contained.to_string()
     }
 
-    fn part2(&self, input: &Self::Input) -> String {
+    fn part2(&mut self, input: &Self::Input) -> String {
         let mut overlapped = 0;
         for (a, b) in input.iter() {
             if overlaps(a, b) {
@@ -41,7 +45,7 @@ impl days::Day for Day {
         overlapped.to_string()
     }
 
-    fn parse_input(&self, input: &String) -> Self::Input {
+    fn parse_input(&mut self, input: &String) -> Self::Input {
         input
             .lines()
             .map(|s| {

@@ -11,7 +11,11 @@ impl days::Day for Day {
         1
     }
 
-    fn part1(&self, input: &Self::Input) -> String {
+    fn new() -> Self {
+        Self {}
+    }
+
+    fn part1(&mut self, input: &Self::Input) -> String {
         input
             .split("\n\n")
             .map(|s| s.lines().map(|l| l.parse::<i32>().unwrap()).sum::<i32>())
@@ -20,7 +24,7 @@ impl days::Day for Day {
             .to_string()
     }
 
-    fn part2(&self, input: &Self::Input) -> String {
+    fn part2(&mut self, input: &Self::Input) -> String {
         input
             .split("\n\n")
             .map(|s| s.lines().map(|l| l.parse::<i32>().unwrap()).sum::<i32>())
@@ -31,7 +35,7 @@ impl days::Day for Day {
             .to_string()
     }
 
-    fn parse_input(&self, input: &String) -> Self::Input {
+    fn parse_input(&mut self, input: &String) -> Self::Input {
         input.clone()
     }
 }

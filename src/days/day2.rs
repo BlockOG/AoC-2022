@@ -97,7 +97,11 @@ impl days::Day for Day {
         2
     }
 
-    fn part1(&self, input: &Self::Input) -> String {
+    fn new() -> Self {
+        Self {}
+    }
+
+    fn part1(&mut self, input: &Self::Input) -> String {
         let input = input
             .iter()
             .map(|(opponent, me)| (opponent.clone(), RPS::from_me(*me).unwrap()))
@@ -109,7 +113,7 @@ impl days::Day for Day {
         total_score.to_string()
     }
 
-    fn part2(&self, input: &Self::Input) -> String {
+    fn part2(&mut self, input: &Self::Input) -> String {
         let input = input
             .iter()
             .map(|(opponent, win)| (opponent.clone(), Win::from_char(*win).unwrap()))
@@ -121,7 +125,7 @@ impl days::Day for Day {
         total_score.to_string()
     }
 
-    fn parse_input(&self, input: &String) -> Self::Input {
+    fn parse_input(&mut self, input: &String) -> Self::Input {
         input
             .lines()
             .map(|x| {

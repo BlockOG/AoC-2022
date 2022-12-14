@@ -32,7 +32,11 @@ impl days::Day for Day {
         11
     }
 
-    fn part1(&self, input: &Self::Input) -> String {
+    fn new() -> Self {
+        Self {}
+    }
+
+    fn part1(&mut self, input: &Self::Input) -> String {
         let mut monkeys = input.clone();
         let mut inspects = [0; 8];
         for _ in 0..20 {
@@ -67,7 +71,7 @@ impl days::Day for Day {
             .to_string()
     }
 
-    fn part2(&self, input: &Self::Input) -> String {
+    fn part2(&mut self, input: &Self::Input) -> String {
         let mut monkeys = input.clone();
         let test_lcm = monkeys.iter().map(|m| m.test.divisor).product::<u64>();
         let mut inspects = [0; 8];
@@ -103,7 +107,7 @@ impl days::Day for Day {
             .to_string()
     }
 
-    fn parse_input(&self, input: &String) -> Self::Input {
+    fn parse_input(&mut self, input: &String) -> Self::Input {
         input
             .split("\n\n")
             .map(|monkey| {

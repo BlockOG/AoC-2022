@@ -26,11 +26,15 @@ impl days::Day for Day {
         10
     }
 
-    fn part1(&self, input: &Self::Input) -> String {
+    fn new() -> Self {
+        Self {}
+    }
+
+    fn part1(&mut self, input: &Self::Input) -> String {
         let mut signal_strenghs = 0;
         let mut cycle = 1;
         let mut x = 1;
-        for instruction in input {
+        for instruction in input.iter() {
             cycle += 1;
             if (cycle + 20) % 40 == 0 {
                 signal_strenghs += cycle * x;
@@ -49,11 +53,11 @@ impl days::Day for Day {
         signal_strenghs.to_string()
     }
 
-    fn part2(&self, input: &Self::Input) -> String {
+    fn part2(&mut self, input: &Self::Input) -> String {
         let mut cycle = 1;
         let mut x: i32 = 1;
         let mut crt = vec![String::new()];
-        for instruction in input {
+        for instruction in input.iter() {
             cycle += 1;
             if (crt.last().unwrap().len() as i32).abs_diff(x) <= 1 {
                 crt.last_mut().unwrap().push('#');
@@ -85,7 +89,7 @@ impl days::Day for Day {
         })
     }
 
-    fn parse_input(&self, input: &String) -> Self::Input {
+    fn parse_input(&mut self, input: &String) -> Self::Input {
         input.lines().map(|line| Instruction::parse(line)).collect()
     }
 }

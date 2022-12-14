@@ -32,7 +32,11 @@ impl days::Day for Day {
         7
     }
 
-    fn part1(&self, input: &Self::Input) -> String {
+    fn new() -> Self {
+        Self {}
+    }
+
+    fn part1(&mut self, input: &Self::Input) -> String {
         let mut sizes = HashMap::new();
         get_size("/".to_string(), input, &mut sizes);
         sizes
@@ -42,7 +46,7 @@ impl days::Day for Day {
             .to_string()
     }
 
-    fn part2(&self, input: &Self::Input) -> String {
+    fn part2(&mut self, input: &Self::Input) -> String {
         let mut sizes = HashMap::new();
         let delete_size = 30000000 - (70000000 - get_size("/".to_string(), input, &mut sizes));
         sizes
@@ -54,7 +58,7 @@ impl days::Day for Day {
             .to_string()
     }
 
-    fn parse_input(&self, input: &String) -> Self::Input {
+    fn parse_input(&mut self, input: &String) -> Self::Input {
         let mut map: Self::Input = HashMap::new();
         let mut curr_dir = String::new();
         for line in input.lines() {
