@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use crate::days;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -22,7 +24,6 @@ impl Pos {
 
 pub struct Sensor {
     pos: Pos,
-    closest_beacon: Pos,
     beacon_distance: u64,
 }
 
@@ -30,16 +31,32 @@ impl Sensor {
     fn new(pos: Pos, closest_beacon: Pos) -> Self {
         Sensor {
             pos,
-            closest_beacon,
             beacon_distance: pos.distance(&closest_beacon),
         }
+    }
+
+    fn get_x_skip_enter(&self, pos: &Pos) -> i64 {
+        let y_diff = self.pos.y.abs_diff(pos.y);
+        if self.beacon_distance < y_diff {
+            i64::MAX
+        } else {
+            self.pos.x - self.beacon_distance as i64 + y_diff as i64
+        }
+    }
+
+    fn get_x_skip_exit(&self, pos: &Pos) -> i64 {
+        self.pos.x + self.beacon_distance as i64 - self.pos.y.abs_diff(pos.y) as i64 + 1
+    }
+
+    fn is_in_distance(&self, pos: &Pos) -> bool {
+        self.pos.distance(pos) <= self.beacon_distance
     }
 }
 
 pub struct Day {}
 
 impl days::Day for Day {
-    type Input = (Vec<Sensor>, i64, i64, i64, i64, u64);
+    type Input = (Vec<Sensor>, i64, i64, i64, i64, u64, u32);
 
     fn get_num(&self) -> u8 {
         15
@@ -55,26 +72,45 @@ impl days::Day for Day {
         let max_x = input.3 + input.5 as i64;
         let mut isnt_in = 0;
 
-        for x in min_x..max_x {
-            let mut broke = false;
+        let mut x = min_x;
+        while x <= max_x {
+            let pos = Pos::new(x, 2000000);
+
+            let mut skip_x = x + 1;
+            let mut in_range = false;
+
             for sensor in sensors.iter() {
-                if (sensor.closest_beacon.x == x && sensor.closest_beacon.y == 2000000)
-                    || (sensor.pos.x == x && sensor.pos.y == 2000000)
-                {
-                    broke = true;
+                if sensor.is_in_distance(&pos) {
+                    skip_x = sensor.get_x_skip_exit(&pos);
+                    in_range = true;
                     break;
                 }
             }
-            if broke {
-                continue;
-            }
-            for sensor in sensors.iter() {
-                if sensor.pos.distance(&Pos::new(x, 2000000)) <= sensor.beacon_distance {
-                    isnt_in += 1;
-                    break;
+
+            if !in_range {
+                let mut enter_x = i64::MAX - 10;
+                for sensor in sensors.iter() {
+                    let enter = sensor.get_x_skip_enter(&pos);
+                    if enter >= skip_x && enter < enter_x {
+                        enter_x = enter;
+                    }
                 }
+
+                skip_x = enter_x;
             }
+
+            let dist = skip_x - x;
+            if dist <= 0 {
+                panic!("What did you do with the input?");
+            }
+
+            if in_range {
+                isnt_in += dist;
+            }
+            x = skip_x;
         }
+
+        isnt_in -= input.6 as i64;
 
         isnt_in.to_string()
     }
@@ -82,80 +118,39 @@ impl days::Day for Day {
     fn part2(&mut self, input: &Self::Input) -> String {
         let sensors = &input.0;
 
-        for sensor in sensors.iter() {
-            let mut x1 = sensor.pos.x - sensor.beacon_distance as i64 - 1;
-            let mut x2 = sensor.pos.x + sensor.beacon_distance as i64 + 1;
-            let mut y1 = sensor.pos.y;
-            let mut y2 = sensor.pos.y;
+        for (i, sensor1) in sensors.iter().enumerate() {
+            for sensor2 in sensors[i + 1..].iter() {
+                let empty_space = sensor1.pos.distance(&sensor2.pos) as i64
+                    - (sensor1.beacon_distance + sensor2.beacon_distance) as i64;
+                if empty_space > 0 && empty_space <= 2 {
+                    // It should somewhere between the 2 scanners
 
-            while x1 <= sensor.pos.x {
-                let mut x1y1 = true;
-                let mut x1y2 = true;
-                let mut x2y1 = true;
-                let mut x2y2 = true;
+                    let ymin = (sensor1.pos.y - sensor1.beacon_distance as i64 - 2)
+                        .max(sensor2.pos.y - sensor2.beacon_distance as i64 - 2);
+                    let ymax = (sensor1.pos.y + sensor1.beacon_distance as i64 + 2)
+                        .min(sensor2.pos.y + sensor2.beacon_distance as i64 + 2);
 
-                if x1 < 0 || x1 > 4000000 {
-                    x1y1 = false;
-                    x1y2 = false;
-                }
+                    for y in ymin..ymax {
+                        let pos = Pos::new(0, y);
 
-                if x2 < 0 || x2 > 4000000 {
-                    x2y1 = false;
-                    x2y2 = false;
-                }
+                        let start_x = (sensor1.get_x_skip_enter(&pos) - 1)
+                            .max(sensor2.get_x_skip_enter(&pos) - 1);
+                        let stop_x = sensor1
+                            .get_x_skip_exit(&pos)
+                            .min(sensor2.get_x_skip_exit(&pos));
 
-                if y1 < 0 || y1 > 4000000 {
-                    x1y1 = false;
-                    x2y1 = false;
-                }
-
-                if y2 < 0 || y2 > 4000000 {
-                    x1y2 = false;
-                    x2y2 = false;
-                }
-
-                let pos1 = Pos::new(x1, y1);
-                let pos2 = Pos::new(x1, y2);
-                let pos3 = Pos::new(x2, y1);
-                let pos4 = Pos::new(x2, y2);
-
-                for sensor2 in sensors.iter() {
-                    if sensor2.beacon_distance >= sensor2.pos.distance(&pos1) {
-                        x1y1 = false;
-                    }
-                    if sensor2.beacon_distance >= sensor2.pos.distance(&pos2) {
-                        x1y2 = false;
-                    }
-                    if sensor2.beacon_distance >= sensor2.pos.distance(&pos3) {
-                        x2y1 = false;
-                    }
-                    if sensor2.beacon_distance >= sensor2.pos.distance(&pos4) {
-                        x2y2 = false;
-                    }
-                    if !x1y1 && !x1y2 && !x2y1 && !x2y2 {
-                        break;
+                        for x in start_x..=stop_x {
+                            let pos = Pos::new(x, y);
+                            if !sensors.iter().any(|f| f.is_in_distance(&pos)) {
+                                return pos.tuning_frequency().to_string();
+                            }
+                        }
                     }
                 }
-                if x1y1 {
-                    return pos1.tuning_frequency().to_string();
-                }
-                if x1y2 {
-                    return pos2.tuning_frequency().to_string();
-                }
-                if x2y1 {
-                    return pos3.tuning_frequency().to_string();
-                }
-                if x2y2 {
-                    return pos4.tuning_frequency().to_string();
-                }
-                x1 += 1;
-                x2 -= 1;
-                y1 += 1;
-                y2 -= 1;
             }
         }
 
-        "Failed".to_string()
+        "What did you do with the input?".to_string()
     }
 
     fn parse_input(&mut self, input: &String) -> Self::Input {
@@ -168,6 +163,7 @@ impl days::Day for Day {
         let mut max_y = i64::MIN;
 
         let mut max_distance = u64::MIN;
+        let mut beacons_on_2000000 = HashSet::new();
 
         for line in input.lines() {
             let mut split = line.split(": ");
@@ -196,11 +192,23 @@ impl days::Day for Day {
                 min_y = min_y.min(y);
                 max_x = max_x.max(x);
                 max_y = max_y.max(y);
+
+                if y == 2000000 {
+                    beacons_on_2000000.insert(x);
+                }
             }
             max_distance = max_distance.max(sensor_pos.distance(&beacon_pos));
             sensors.push(Sensor::new(sensor_pos, beacon_pos));
         }
 
-        (sensors, min_x, min_y, max_x, max_y, max_distance)
+        (
+            sensors,
+            min_x,
+            min_y,
+            max_x,
+            max_y,
+            max_distance,
+            beacons_on_2000000.len() as u32,
+        )
     }
 }
