@@ -1,7 +1,7 @@
 use clap::{arg, command};
 use colored::*;
 
-use crate::days::run_day;
+use crate::days::{nanos_to_string, run_day};
 
 mod days;
 
@@ -22,11 +22,9 @@ fn main() {
             )
             .required(false),
         )
-        .arg(
-            arg!(
-                -p --dontprint "Don't print the output of the days"
-            )
-        )
+        .arg(arg!(
+            -p --dontprint "Don't print the output of the days"
+        ))
         .get_matches();
 
     let day = matches.get_one::<String>("DAY").unwrap();
@@ -44,29 +42,29 @@ fn main() {
         }
         if *matches.get_one::<bool>("totaltime").unwrap() {
             println!(
-                "{} {} ms",
+                "{} {}",
                 "Total Parsing Time:".bold(),
-                total_time.0 as f64 / 1_000_000f64
+                nanos_to_string(total_time.0)
             );
             println!(
-                "{} {} ms",
+                "{} {}",
                 "Total Part 1 Time:".bold(),
-                total_time.1 as f64 / 1_000_000f64
+                nanos_to_string(total_time.1)
             );
             println!(
-                "{} {} ms",
+                "{} {}",
                 "Total Part 2 Time:".bold(),
-                total_time.2 as f64 / 1_000_000f64
+                nanos_to_string(total_time.2)
             );
             println!(
-                "{} {} ms",
+                "{} {}",
                 "Total Parts Time:".bold(),
-                (total_time.1 + total_time.2) as f64 / 1_000_000f64
+                nanos_to_string(total_time.1 + total_time.2)
             );
             println!(
-                "{} {} ms",
+                "{} {}",
                 "Total Time:".bold(),
-                (total_time.0 + total_time.1 + total_time.2) as f64 / 1_000_000f64
+                nanos_to_string(total_time.0 + total_time.1 + total_time.2)
             );
         }
         return;
@@ -83,19 +81,19 @@ fn main() {
             }
         },
         time,
-        dont_print
+        dont_print,
     );
     if let Some((parsing, part1, part2)) = total_time {
         if *matches.get_one::<bool>("totaltime").unwrap() {
             println!(
-                "{} {} ms",
+                "{} {}",
                 "Total Parts Time:".bold(),
-                (part1 + part2) as f64 / 1_000_000f64
+                nanos_to_string(part1 + part2)
             );
             println!(
-                "{} {} ms",
+                "{} {}",
                 "Total Time:".bold(),
-                (parsing + part1 + part2) as f64 / 1_000_000f64
+                nanos_to_string(parsing + part1 + part2)
             );
         }
     }

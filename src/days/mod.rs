@@ -35,6 +35,27 @@ pub trait Day {
     fn parse_input(&mut self, input: &String) -> Self::Input;
 }
 
+fn nanos_to_most_convenient(nanos: u128) -> (f64, String) {
+    let mut nanos = nanos as f64;
+    let mut unit = "ns";
+    if nanos > 1_000_000_000f64 {
+        nanos /= 1_000_000_000f64;
+        unit = "s";
+    } else if nanos > 1_000_000f64 {
+        nanos /= 1_000_000f64;
+        unit = "ms";
+    } else if nanos > 1_000f64 {
+        nanos /= 1_000f64;
+        unit = "us";
+    }
+    (nanos, unit.to_string())
+}
+
+pub fn nanos_to_string(nanos: u128) -> String {
+    let (num, unit) = nanos_to_most_convenient(nanos);
+    format!("{} {}", num, unit)
+}
+
 fn run_impled_day(day: &mut impl Day, time: bool, dont_print: bool) -> Option<(u128, u128, u128)> {
     let mut input = String::new();
     let input_file_path = format!("inputs/input{}.txt", day.get_num());
@@ -85,19 +106,19 @@ fn run_impled_day(day: &mut impl Day, time: bool, dont_print: bool) -> Option<(u
 
     if time {
         println!(
-            "{} {} ms",
+            "{} {}",
             "Parsing Time:".bold(),
-            elapsed_parsing as f64 / 1_000_000f64
+            nanos_to_string(elapsed_parsing)
         );
         println!(
-            "{} {} ms",
+            "{} {}",
             "Part 1 Time:".bold(),
-            elapsed_part1 as f64 / 1_000_000f64
+            nanos_to_string(elapsed_part1)
         );
         println!(
-            "{} {} ms",
+            "{} {}",
             "Part 2 Time:".bold(),
-            elapsed_part2 as f64 / 1_000_000f64
+            nanos_to_string(elapsed_part2)
         );
     }
     Some((elapsed_parsing, elapsed_part1, elapsed_part2))
