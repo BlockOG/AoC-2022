@@ -1,6 +1,3 @@
-mod day14;
-mod day15;
-
 use colored::*;
 use paste::paste;
 use std::{fs::File, io::Read, time::Instant};

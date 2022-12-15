@@ -41,23 +41,21 @@ impl days::Day for Day {
         let mut inspects = [0; 8];
         for _ in 0..20 {
             for i in 0..monkeys.len() {
-                let monkey = monkeys.get(i).unwrap().clone();
-                for item in monkey.items.iter().rev() {
-                    let new_item = match monkey.operation {
+                for item_index in (0..monkeys[i].items.len()).rev() {
+                    let item = monkeys[i].items[item_index];
+                    let new_item = match monkeys[i].operation {
                         Operation::Add(n) => item + n,
                         Operation::Multiply(n) => item * n,
                         Operation::Square => item * item,
                     } / 3;
                     inspects[i] += 1;
                     monkeys[i].items.pop();
-                    if new_item % monkey.test.divisor == 0 {
-                        monkeys[monkey.test.true_monkey as usize]
-                            .items
-                            .push(new_item);
+                    if new_item % monkeys[i].test.divisor == 0 {
+                        let true_monkey = monkeys[i].test.true_monkey as usize;
+                        monkeys[true_monkey].items.push(new_item);
                     } else {
-                        monkeys[monkey.test.false_monkey as usize]
-                            .items
-                            .push(new_item);
+                        let false_monkey = monkeys[i].test.false_monkey as usize;
+                        monkeys[false_monkey].items.push(new_item);
                     }
                 }
             }
@@ -77,23 +75,21 @@ impl days::Day for Day {
         let mut inspects = [0; 8];
         for _ in 0..10000 {
             for i in 0..monkeys.len() {
-                let monkey = monkeys.get(i).unwrap().clone();
-                for item in monkey.items.iter().rev() {
-                    let new_item = match monkey.operation {
+                for item_index in (0..monkeys[i].items.len()).rev() {
+                    let item = monkeys[i].items[item_index];
+                    let new_item = match monkeys[i].operation {
                         Operation::Add(n) => item + n,
                         Operation::Multiply(n) => item * n,
                         Operation::Square => item * item,
                     } % test_lcm;
                     inspects[i] += 1;
                     monkeys[i].items.pop();
-                    if new_item % monkey.test.divisor == 0 {
-                        monkeys[monkey.test.true_monkey as usize]
-                            .items
-                            .push(new_item);
+                    if new_item % monkeys[i].test.divisor == 0 {
+                        let true_monkey = monkeys[i].test.true_monkey as usize;
+                        monkeys[true_monkey].items.push(new_item);
                     } else {
-                        monkeys[monkey.test.false_monkey as usize]
-                            .items
-                            .push(new_item);
+                        let false_monkey = monkeys[i].test.false_monkey as usize;
+                        monkeys[false_monkey].items.push(new_item);
                     }
                 }
             }
