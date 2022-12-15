@@ -123,18 +123,18 @@ impl days::Day for Day {
                 let empty_space = sensor1.pos.distance(&sensor2.pos) as i64
                     - (sensor1.beacon_distance + sensor2.beacon_distance) as i64;
                 if empty_space > 0 && empty_space <= 2 {
-                    // It should somewhere between the 2 scanners
+                    let min_y =
+                        sensor1.pos.y.max(sensor2.pos.y) - sensor1.beacon_distance as i64 - 2;
+                    let max_y =
+                        sensor1.pos.y.min(sensor2.pos.y) + sensor1.beacon_distance as i64 + 2;
 
-                    let ymin = (sensor1.pos.y - sensor1.beacon_distance as i64 - 2)
-                        .max(sensor2.pos.y - sensor2.beacon_distance as i64 - 2);
-                    let ymax = (sensor1.pos.y + sensor1.beacon_distance as i64 + 2)
-                        .min(sensor2.pos.y + sensor2.beacon_distance as i64 + 2);
-
-                    for y in ymin..ymax {
+                    for y in min_y..max_y {
                         let pos = Pos::new(0, y);
 
-                        let start_x = (sensor1.get_x_skip_enter(&pos) - 1)
-                            .max(sensor2.get_x_skip_enter(&pos) - 1);
+                        let start_x = sensor1
+                            .get_x_skip_enter(&pos)
+                            .max(sensor2.get_x_skip_enter(&pos))
+                            - 1;
                         let stop_x = sensor1
                             .get_x_skip_exit(&pos)
                             .min(sensor2.get_x_skip_exit(&pos));
