@@ -1,4 +1,5 @@
 mod day14;
+mod day15;
 
 use colored::*;
 use paste::paste;
@@ -107,5 +108,5 @@ pub fn run_day(day_num: u8, time: bool, dont_print: bool) -> Option<(u128, u128,
         println!("{}", "Day number must be between 1 and 25".bold().red());
         return None;
     }
-    run_days!(day_num, time, dont_print, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14);
+    run_days!(day_num, time, dont_print, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
 }
