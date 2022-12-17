@@ -125,4 +125,4 @@ fn run_impled_day(day: &mut impl Day, time: bool, dont_print: bool) -> Option<(u
     Some((elapsed_parsing, elapsed_part1, elapsed_part2))
 }
 
-run_day!(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+run_day!(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17);
