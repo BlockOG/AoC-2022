@@ -2,21 +2,25 @@ use colored::*;
 use paste::paste;
 use std::{fs::File, io::Read, time::Instant};
 
-macro_rules! run_days {
-    ($the_day:expr, $the_time:expr, $the_dont_print:expr, $($day:expr),+) => {
+macro_rules! run_day {
+    ($($day:expr),+) => {
         $(
-            paste! { mod [<day $day>] {
-                include!(concat!(stringify!([<day $day>]), ".rs"));
-            } }
+            paste! { mod [<day $day>] ; }
         )+
 
-        return match $the_day {
-            $(
-                $day => run_impled_day(paste! { &mut [<day $day>]::Day::new() }, $the_time, $the_dont_print),
-            )+
-            _ => {
-                println!("{}", format!("Day {} not implemented yet", $the_day).bold().red());
-                None
+        pub fn run_day(day_num: u8, time: bool, dont_print: bool) -> Option<(u128, u128, u128)> {
+            if day_num < 1 || day_num > 25 {
+                println!("{}", "Day number must be between 1 and 25".bold().red());
+                return None;
+            }
+            return match day_num {
+                $(
+                    $day => run_impled_day(paste! { &mut [<day $day>]::Day::new() }, time, dont_print),
+                )+
+                _ => {
+                    println!("{}", format!("Day {} not implemented yet", day_num).bold().red());
+                    None
+                }
             }
         }
     }
@@ -121,10 +125,4 @@ fn run_impled_day(day: &mut impl Day, time: bool, dont_print: bool) -> Option<(u
     Some((elapsed_parsing, elapsed_part1, elapsed_part2))
 }
 
-pub fn run_day(day_num: u8, time: bool, dont_print: bool) -> Option<(u128, u128, u128)> {
-    if day_num < 1 || day_num > 25 {
-        println!("{}", "Day number must be between 1 and 25".bold().red());
-        return None;
-    }
-    run_days!(day_num, time, dont_print, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
-}
+run_day!(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
