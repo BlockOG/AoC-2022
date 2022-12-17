@@ -22,6 +22,50 @@ impl Pos {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+struct Line {
+    y_intercept: i64,
+    increasing: bool,
+}
+
+impl Line {
+    fn new(y_intercept: i64, increasing: bool) -> Self {
+        Line {
+            y_intercept,
+            increasing,
+        }
+    }
+
+    fn bias(&self) -> i64 {
+        if self.increasing {
+            1
+        } else {
+            -1
+        }
+    }
+
+    fn intersects(&self, other: &Line) -> Option<Pos> {
+        if self.increasing == other.increasing {
+            return None;
+        }
+        if self.y_intercept.abs_diff(other.y_intercept) % 2 == 1 {
+            return None;
+        }
+        let c = (other.y_intercept - self.y_intercept) / 2;
+        Some(Pos::new(self.bias() * c, other.y_intercept - c))
+    }
+
+    fn from(pos: &Pos, increasing: bool) -> Self {
+        let mut y_intercept = pos.y;
+        if increasing {
+            y_intercept -= pos.x;
+        } else {
+            y_intercept += pos.x;
+        }
+        Line::new(y_intercept, increasing)
+    }
+}
+
 pub struct Sensor {
     pos: Pos,
     beacon_distance: u64,
@@ -118,33 +162,22 @@ impl days::Day for Day {
     fn part2(&mut self, input: &Self::Input) -> String {
         let sensors = &input.0;
 
+        let mut last_line = None;
         for (i, sensor1) in sensors.iter().enumerate() {
             for sensor2 in sensors[i + 1..].iter() {
                 let empty_space = sensor1.pos.distance(&sensor2.pos) as i64
                     - (sensor1.beacon_distance + sensor2.beacon_distance) as i64;
                 if empty_space > 0 && empty_space <= 2 {
-                    let min_y =
-                        sensor1.pos.y.max(sensor2.pos.y) - sensor1.beacon_distance as i64 - 2;
-                    let max_y =
-                        sensor1.pos.y.min(sensor2.pos.y) + sensor1.beacon_distance as i64 + 2;
+                    let line = Line::from(&Pos::new(sensor1.pos.x, if sensor1.pos.y > sensor2.pos.y {
+                        sensor1.pos.y - sensor1.beacon_distance as i64
+                    } else {
+                        sensor1.pos.y + sensor1.beacon_distance as i64
+                    }), (sensor1.pos.x < sensor2.pos.x) ^ (sensor1.pos.y < sensor2.pos.y));
 
-                    for y in min_y..max_y {
-                        let pos = Pos::new(0, y);
-
-                        let start_x = sensor1
-                            .get_x_skip_enter(&pos)
-                            .max(sensor2.get_x_skip_enter(&pos))
-                            - 1;
-                        let stop_x = sensor1
-                            .get_x_skip_exit(&pos)
-                            .min(sensor2.get_x_skip_exit(&pos));
-
-                        for x in start_x..=stop_x {
-                            let pos = Pos::new(x, y);
-                            if !sensors.iter().any(|f| f.is_in_distance(&pos)) {
-                                return pos.tuning_frequency().to_string();
-                            }
-                        }
+                    if last_line.is_none() {
+                        last_line = Some(line);
+                    } else {
+                        return line.intersects(&last_line.unwrap()).unwrap().tuning_frequency().to_string();
                     }
                 }
             }
