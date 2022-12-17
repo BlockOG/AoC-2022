@@ -16,34 +16,34 @@ use std::collections::HashMap;
 fn dfs(
     flows: &Vec<u64>,
     dist: &Vec<Vec<u64>>,
-    cur: u64,
-    rest: &Vec<u64>,
-    t: u64,
+    current_valve: u64,
+    closed_valves: &Vec<u64>,
+    time_remaining: u64,
     cache: &mut HashMap<(u64, Vec<u64>, u64), u64>,
 ) -> u64 {
     // Check if the result is already in the cache
-    if let Some(result) = cache.get(&(cur, rest.clone(), t)) {
+    if let Some(result) = cache.get(&(current_valve, closed_valves.clone(), time_remaining)) {
         return *result;
     }
 
-    let result = choose_one(rest)
-        .filter(|&(r, _)| dist[cur as usize][r as usize] < t)
+    let result = choose_one(closed_valves)
+        .filter(|&(r, _)| dist[current_valve as usize][r as usize] < time_remaining)
         .map(|(r, rr)| {
-            flows[r as usize] * (t - dist[cur as usize][r as usize] - 1)
+            flows[r as usize] * (time_remaining - dist[current_valve as usize][r as usize] - 1)
                 + dfs(
-                    flows,
-                    dist,
-                    r,
-                    &rr,
-                    t - dist[cur as usize][r as usize] - 1,
-                    cache,
+                flows,
+                dist,
+                r,
+                &rr,
+                time_remaining - dist[current_valve as usize][r as usize] - 1,
+                cache,
                 )
         })
         .max()
         .unwrap_or(0);
 
     // Add the result to the cache
-    cache.insert((cur, rest.clone(), t), result);
+    cache.insert((current_valve, closed_valves.clone(), time_remaining), result);
 
     result
 }
@@ -52,23 +52,23 @@ fn dfs_part2(
     names: &Vec<String>,
     flows: &Vec<u64>,
     dist: &Vec<Vec<u64>>,
-    cur: u64,
-    rest: &Vec<u64>,
-    t: u64,
+    current_valve: u64,
+    closed_valves: &Vec<u64>,
+    time_remaining: u64,
     cache: &mut HashMap<(u64, Vec<u64>, u64), u64>,
 ) -> u64 {
-    choose_one(rest)
-        .filter(|&(r, _)| dist[cur as usize][r as usize] < t)
+    choose_one(closed_valves)
+        .filter(|&(r, _)| dist[current_valve as usize][r as usize] < time_remaining)
         .map(|(r, rr)| {
-            flows[r as usize] * (t - dist[cur as usize][r as usize] - 1)
+            flows[r as usize] * (time_remaining - dist[current_valve as usize][r as usize] - 1)
                 + dfs_part2(
-                    names,
-                    flows,
-                    dist,
-                    r,
-                    &rr,
-                    t - dist[cur as usize][r as usize] - 1,
-                    cache,
+                names,
+                flows,
+                dist,
+                r,
+                &rr,
+                time_remaining - dist[current_valve as usize][r as usize] - 1,
+                cache,
                 )
         })
         .max()
@@ -76,13 +76,15 @@ fn dfs_part2(
             flows,
             dist,
             names.iter().position(|x| x == &"AA".to_string()).unwrap() as u64,
-            rest,
+            closed_valves,
             26,
             cache,
         ))
 }
 
-pub struct Day {}
+pub struct Day {
+    part1_cache: HashMap<(u64, Vec<u64>, u64), u64>,
+}
 
 impl days::Day for Day {
     type Input = (Vec<String>, Vec<u64>, Vec<Vec<String>>, Vec<Vec<u64>>);
@@ -92,7 +94,9 @@ impl days::Day for Day {
     }
 
     fn new() -> Self {
-        Self {}
+        Self {
+            part1_cache: HashMap::new(),
+        }
     }
 
     fn part1(&mut self, input: &Self::Input) -> String {
@@ -108,7 +112,7 @@ impl days::Day for Day {
                 .map(|(i, _)| i as u64)
                 .collect(),
             30,
-            &mut HashMap::new(),
+            &mut self.part1_cache,
         )
         .to_string()
     }
@@ -127,7 +131,7 @@ impl days::Day for Day {
                 .map(|(i, _)| i as u64)
                 .collect(),
             26,
-            &mut HashMap::new(),
+            &mut self.part1_cache,
         )
         .to_string()
     }
