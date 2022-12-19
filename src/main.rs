@@ -14,26 +14,35 @@ fn main() {
             arg!(
                 -t --time "Time the execution of days"
             )
-            .required(false),
+                .required(false),
         )
         .arg(
             arg!(
                 -d --totaltime "Time the total execution of days"
             )
-            .required(false),
+                .required(false),
         )
         .arg(arg!(
             -p --dontprint "Don't print the output of the days"
+        ))
+        .arg(arg!(
+            -s --dontsubmit "Don't auto-submit the answer"
+        ))
+        .arg(arg!(
+            -i --dontinput "Don't auto-get the input"
         ))
         .get_matches();
 
     let day = matches.get_one::<String>("DAY").unwrap();
     let time = *matches.get_one::<bool>("time").unwrap();
     let dont_print = *matches.get_one::<bool>("dontprint").unwrap();
+    let dontsubmit = *matches.get_one::<bool>("dontsubmit").unwrap();
+    let dontinput = *matches.get_one::<bool>("dontinput").unwrap();
+    let client = reqwest::blocking::Client::new();
     if day == "all" {
         let mut total_time = (0, 0, 0);
         for day in 1..=25 {
-            let took_time = run_day(day, time, dont_print);
+            let took_time = run_day(day, time, dont_print, dontsubmit, dontinput, &client);
             if let Some((parsing, part1, part2)) = took_time {
                 total_time.0 += parsing;
                 total_time.1 += part1;
@@ -82,6 +91,9 @@ fn main() {
         },
         time,
         dont_print,
+        dontsubmit,
+        dontinput,
+        &client,
     );
     if let Some((parsing, part1, part2)) = total_time {
         if *matches.get_one::<bool>("totaltime").unwrap() {
