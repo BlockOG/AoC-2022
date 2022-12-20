@@ -167,14 +167,14 @@ impl days::Day for Day {
             for sensor2 in sensors[i + 1..].iter() {
                 let empty_space = sensor1.pos.distance(&sensor2.pos) as i64
                     - (sensor1.beacon_distance + sensor2.beacon_distance) as i64;
-                if empty_space > 0 && empty_space <= 2 {
+                if empty_space == 2 {
                     let line = Line::from(
                         &Pos::new(
                             sensor1.pos.x,
                             if sensor1.pos.y > sensor2.pos.y {
-                                sensor1.pos.y - sensor1.beacon_distance as i64
+                                sensor1.pos.y - sensor1.beacon_distance as i64 - 1
                             } else {
-                                sensor1.pos.y + sensor1.beacon_distance as i64
+                                sensor1.pos.y + sensor1.beacon_distance as i64 + 1
                             },
                         ),
                         (sensor1.pos.x < sensor2.pos.x) ^ (sensor1.pos.y < sensor2.pos.y),

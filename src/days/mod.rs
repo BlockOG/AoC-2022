@@ -288,6 +288,7 @@ fn run_impled_day(
                 println!("{} {}", "Part 1:".bold(), part1.0.green());
             } else {
                 println!("{} {}", "Part 1:".bold(), part1.0.red());
+                println!("        {}", part1_answer.green());
             }
         }
     }
@@ -308,6 +309,7 @@ fn run_impled_day(
                 println!("{} {}", "Part 2:".bold(), part2.0.green());
             } else {
                 println!("{} {}", "Part 2:".bold(), part2.0.red());
+                println!("        {}", part2_answer.green());
             }
         }
     }
