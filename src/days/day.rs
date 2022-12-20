@@ -13,11 +13,11 @@ impl days::Day for Day {
         Self {}
     }
 
-    fn part1(&mut self, input: &Self::Input) -> String {
+    fn part1(&mut self, input: &Self::Input) -> (String, bool) {
         todo!("Part 1 Day {}", self.get_num())
     }
 
-    fn part2(&mut self, input: &Self::Input) -> String {
+    fn part2(&mut self, input: &Self::Input) -> (String, bool) {
         todo!("Part 2 Day {}", self.get_num())
     }
 

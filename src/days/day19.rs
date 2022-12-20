@@ -289,25 +289,31 @@ impl days::Day for Day {
         Self {}
     }
 
-    fn part1(&mut self, input: &Self::Input) -> String {
-        input
-            .iter()
-            .enumerate()
-            .map(|(i, blueprint)| {
-                let geode_score = search(blueprint, 24);
-                geode_score * (i + 1)
-            })
-            .sum::<usize>()
-            .to_string()
+    fn part1(&mut self, input: &Self::Input) -> (String, bool) {
+        (
+            input
+                .iter()
+                .enumerate()
+                .map(|(i, blueprint)| {
+                    let geode_score = search(blueprint, 24);
+                    geode_score * (i + 1)
+                })
+                .sum::<usize>()
+                .to_string(),
+            true,
+        )
     }
 
-    fn part2(&mut self, input: &Self::Input) -> String {
-        input
-            .iter()
-            .take(3)
-            .map(|blueprint| search(blueprint, 32))
-            .product::<usize>()
-            .to_string()
+    fn part2(&mut self, input: &Self::Input) -> (String, bool) {
+        (
+            input
+                .iter()
+                .take(3)
+                .map(|blueprint| search(blueprint, 32))
+                .product::<usize>()
+                .to_string(),
+            true,
+        )
     }
 
     fn parse_input(&mut self, input: &String) -> Self::Input {

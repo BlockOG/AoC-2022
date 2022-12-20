@@ -30,7 +30,7 @@ impl days::Day for Day {
         Self {}
     }
 
-    fn part1(&mut self, input: &Self::Input) -> String {
+    fn part1(&mut self, input: &Self::Input) -> (String, bool) {
         let mut signal_strenghs = 0;
         let mut cycle = 1;
         let mut x = 1;
@@ -50,10 +50,10 @@ impl days::Day for Day {
                 }
             }
         }
-        signal_strenghs.to_string()
+        (signal_strenghs.to_string(), true)
     }
 
-    fn part2(&mut self, input: &Self::Input) -> String {
+    fn part2(&mut self, input: &Self::Input) -> (String, bool) {
         let mut cycle = 1;
         let mut x: i32 = 1;
         let mut crt = vec![String::new()];
@@ -84,9 +84,12 @@ impl days::Day for Day {
             }
         }
         crt.pop();
-        crt.iter().fold(String::new(), |acc, x| {
-            acc + "\n" + &x.replace("#", "██").replace(" ", "  ")
-        })
+        (
+            crt.iter().fold(String::new(), |acc, x| {
+                acc + "\n" + &x.replace("#", "██").replace(" ", "  ")
+            }),
+            false,
+        )
     }
 
     fn parse_input(&mut self, input: &String) -> Self::Input {

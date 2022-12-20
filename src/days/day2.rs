@@ -101,7 +101,7 @@ impl days::Day for Day {
         Self {}
     }
 
-    fn part1(&mut self, input: &Self::Input) -> String {
+    fn part1(&mut self, input: &Self::Input) -> (String, bool) {
         let input = input
             .iter()
             .map(|(opponent, me)| (opponent.clone(), RPS::from_me(*me).unwrap()))
@@ -110,10 +110,10 @@ impl days::Day for Day {
         for (opponent, me) in input.iter() {
             total_score += Win::from_rps(me, opponent).to_score() + me.to_score();
         }
-        total_score.to_string()
+        (total_score.to_string(), true)
     }
 
-    fn part2(&mut self, input: &Self::Input) -> String {
+    fn part2(&mut self, input: &Self::Input) -> (String, bool) {
         let input = input
             .iter()
             .map(|(opponent, win)| (opponent.clone(), Win::from_char(*win).unwrap()))
@@ -122,7 +122,7 @@ impl days::Day for Day {
         for (opponent, win) in input.iter() {
             total_score += opponent.from_opponent_win(win).to_score() + win.to_score();
         }
-        total_score.to_string()
+        (total_score.to_string(), true)
     }
 
     fn parse_input(&mut self, input: &String) -> Self::Input {

@@ -110,7 +110,7 @@ impl days::Day for Day {
         Self {}
     }
 
-    fn part1(&mut self, input: &Self::Input) -> String {
+    fn part1(&mut self, input: &Self::Input) -> (String, bool) {
         let sensors = &input.0;
         let min_x = input.1 - input.5 as i64;
         let max_x = input.3 + input.5 as i64;
@@ -156,10 +156,10 @@ impl days::Day for Day {
 
         isnt_in -= input.6 as i64;
 
-        isnt_in.to_string()
+        (isnt_in.to_string(), true)
     }
 
-    fn part2(&mut self, input: &Self::Input) -> String {
+    fn part2(&mut self, input: &Self::Input) -> (String, bool) {
         let sensors = &input.0;
 
         let mut last_line = None;
@@ -168,22 +168,34 @@ impl days::Day for Day {
                 let empty_space = sensor1.pos.distance(&sensor2.pos) as i64
                     - (sensor1.beacon_distance + sensor2.beacon_distance) as i64;
                 if empty_space > 0 && empty_space <= 2 {
-                    let line = Line::from(&Pos::new(sensor1.pos.x, if sensor1.pos.y > sensor2.pos.y {
-                        sensor1.pos.y - sensor1.beacon_distance as i64
-                    } else {
-                        sensor1.pos.y + sensor1.beacon_distance as i64
-                    }), (sensor1.pos.x < sensor2.pos.x) ^ (sensor1.pos.y < sensor2.pos.y));
+                    let line = Line::from(
+                        &Pos::new(
+                            sensor1.pos.x,
+                            if sensor1.pos.y > sensor2.pos.y {
+                                sensor1.pos.y - sensor1.beacon_distance as i64
+                            } else {
+                                sensor1.pos.y + sensor1.beacon_distance as i64
+                            },
+                        ),
+                        (sensor1.pos.x < sensor2.pos.x) ^ (sensor1.pos.y < sensor2.pos.y),
+                    );
 
                     if last_line.is_none() {
                         last_line = Some(line);
                     } else {
-                        return line.intersects(&last_line.unwrap()).unwrap().tuning_frequency().to_string();
+                        return (
+                            line.intersects(&last_line.unwrap())
+                                .unwrap()
+                                .tuning_frequency()
+                                .to_string(),
+                            true,
+                        );
                     }
                 }
             }
         }
 
-        "What did you do with the input?".to_string()
+        panic!("What did you do with the input?");
     }
 
     fn parse_input(&mut self, input: &String) -> Self::Input {

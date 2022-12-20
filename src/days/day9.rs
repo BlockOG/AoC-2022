@@ -90,7 +90,7 @@ impl days::Day for Day {
         Self {}
     }
 
-    fn part1(&mut self, input: &Self::Input) -> String {
+    fn part1(&mut self, input: &Self::Input) -> (String, bool) {
         let mut head = Position::new();
         let mut tail = Position::new();
         let mut tail_path = HashSet::new();
@@ -103,10 +103,10 @@ impl days::Day for Day {
             }
         }
 
-        tail_path.len().to_string()
+        (tail_path.len().to_string(), true)
     }
 
-    fn part2(&mut self, input: &Self::Input) -> String {
+    fn part2(&mut self, input: &Self::Input) -> (String, bool) {
         let mut head = Position::new();
         let mut tail1 = Position::new();
         let mut tail2 = Position::new();
@@ -135,7 +135,7 @@ impl days::Day for Day {
             }
         }
 
-        tail_path.len().to_string()
+        (tail_path.len().to_string(), true)
     }
 
     fn parse_input(&mut self, input: &String) -> Self::Input {

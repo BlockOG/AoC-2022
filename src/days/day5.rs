@@ -23,7 +23,7 @@ impl days::Day for Day {
         Self {}
     }
 
-    fn part1(&mut self, input: &Self::Input) -> String {
+    fn part1(&mut self, input: &Self::Input) -> (String, bool) {
         let crates_string = &input.0;
         let to_move = &input.1;
 
@@ -73,10 +73,10 @@ impl days::Day for Day {
                 result.push(*crat);
             }
         }
-        result
+        (result, true)
     }
 
-    fn part2(&mut self, input: &Self::Input) -> String {
+    fn part2(&mut self, input: &Self::Input) -> (String, bool) {
         let crates_string = &input.0;
         let to_move = &input.1;
 
@@ -129,7 +129,7 @@ impl days::Day for Day {
                 result.push(*crat);
             }
         }
-        result
+        (result, true)
     }
 
     fn parse_input(&mut self, input: &String) -> Self::Input {

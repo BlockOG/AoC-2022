@@ -87,7 +87,10 @@ impl Grid {
                 grid.remove(&pos);
                 for delta in &NEIGHBOR_DELTAS {
                     let new_pos = pos + delta;
-                    if !been.contains(&new_pos) && self.is_within_bounds(&new_pos) && !self.grid.contains(&new_pos) {
+                    if !been.contains(&new_pos)
+                        && self.is_within_bounds(&new_pos)
+                        && !self.grid.contains(&new_pos)
+                    {
                         new_to_see.insert(new_pos);
                     }
                 }
@@ -157,12 +160,12 @@ impl days::Day for Day {
         Self {}
     }
 
-    fn part1(&mut self, input: &Self::Input) -> String {
-        input.surface_area().to_string()
+    fn part1(&mut self, input: &Self::Input) -> (String, bool) {
+        (input.surface_area().to_string(), true)
     }
 
-    fn part2(&mut self, input: &Self::Input) -> String {
-        input.outer_surface_area().to_string()
+    fn part2(&mut self, input: &Self::Input) -> (String, bool) {
+        (input.outer_surface_area().to_string(), true)
     }
 
     fn parse_input(&mut self, input: &String) -> Self::Input {

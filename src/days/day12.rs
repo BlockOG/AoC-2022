@@ -86,31 +86,37 @@ impl days::Day for Day {
         Self {}
     }
 
-    fn part1(&mut self, input: &Self::Input) -> String {
+    fn part1(&mut self, input: &Self::Input) -> (String, bool) {
         let (start, end, grid) = input;
 
-        astar(
-            end,
-            |&current| current.predecessors(&grid),
-            |&current| current.distance(*start),
-            |&current| current == *start,
+        (
+            astar(
+                end,
+                |&current| current.predecessors(&grid),
+                |&current| current.distance(*start),
+                |&current| current == *start,
+            )
+            .unwrap()
+            .1
+            .to_string(),
+            true,
         )
-        .unwrap()
-        .1
-        .to_string()
     }
 
-    fn part2(&mut self, input: &Self::Input) -> String {
+    fn part2(&mut self, input: &Self::Input) -> (String, bool) {
         let (_, end, grid) = input;
 
-        dijkstra(
-            end,
-            |&current| current.predecessors(&grid),
-            |current| index_grid(current, grid) == 0,
+        (
+            dijkstra(
+                end,
+                |&current| current.predecessors(&grid),
+                |current| index_grid(current, grid) == 0,
+            )
+            .unwrap()
+            .1
+            .to_string(),
+            true,
         )
-        .unwrap()
-        .1
-        .to_string()
     }
 
     fn parse_input(&mut self, input: &String) -> Self::Input {

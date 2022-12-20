@@ -108,7 +108,7 @@ impl days::Day for Day {
         }
     }
 
-    fn part1(&mut self, _input: &Self::Input) -> String {
+    fn part1(&mut self, _input: &Self::Input) -> (String, bool) {
         let mut rested_sand = 0;
         let mut path = vec![];
 
@@ -138,10 +138,10 @@ impl days::Day for Day {
                 didnt_all = false;
             }
         }
-        rested_sand.to_string()
+        (rested_sand.to_string(), true)
     }
 
-    fn part2(&mut self, _input: &Self::Input) -> String {
+    fn part2(&mut self, _input: &Self::Input) -> (String, bool) {
         let mut rested_sand = 0;
         let mut current_layer = 1;
 
@@ -161,7 +161,7 @@ impl days::Day for Day {
             current_layer += 2;
         }
 
-        rested_sand.to_string()
+        (rested_sand.to_string(), true)
     }
 
     fn parse_input(&mut self, input: &String) -> Self::Input {

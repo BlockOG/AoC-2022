@@ -131,17 +131,17 @@ impl days::Day for Day {
         Self {}
     }
 
-    fn part1(&mut self, input: &Self::Input) -> String {
+    fn part1(&mut self, input: &Self::Input) -> (String, bool) {
         let mut sum = 0;
         for (i, (a, b)) in input.iter().enumerate() {
             if a.cmp(b).is_le() {
                 sum += i + 1;
             }
         }
-        sum.to_string()
+        (sum.to_string(), true)
     }
 
-    fn part2(&mut self, input: &Self::Input) -> String {
+    fn part2(&mut self, input: &Self::Input) -> (String, bool) {
         let packets = input.iter().fold(vec![], |mut acc, (a, b)| {
             acc.push(a);
             acc.push(b);
@@ -162,7 +162,7 @@ impl days::Day for Day {
             }
         }
 
-        (two_index * six_index).to_string()
+        ((two_index * six_index).to_string(), true)
     }
 
     fn parse_input(&mut self, input: &String) -> Self::Input {

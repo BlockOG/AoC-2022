@@ -31,19 +31,22 @@ fn dfs(
         .map(|(r, rr)| {
             flows[r as usize] * (time_remaining - dist[current_valve as usize][r as usize] - 1)
                 + dfs(
-                flows,
-                dist,
-                r,
-                &rr,
-                time_remaining - dist[current_valve as usize][r as usize] - 1,
-                cache,
+                    flows,
+                    dist,
+                    r,
+                    &rr,
+                    time_remaining - dist[current_valve as usize][r as usize] - 1,
+                    cache,
                 )
         })
         .max()
         .unwrap_or(0);
 
     // Add the result to the cache
-    cache.insert((current_valve, closed_valves.clone(), time_remaining), result);
+    cache.insert(
+        (current_valve, closed_valves.clone(), time_remaining),
+        result,
+    );
 
     result
 }
@@ -62,13 +65,13 @@ fn dfs_part2(
         .map(|(r, rr)| {
             flows[r as usize] * (time_remaining - dist[current_valve as usize][r as usize] - 1)
                 + dfs_part2(
-                names,
-                flows,
-                dist,
-                r,
-                &rr,
-                time_remaining - dist[current_valve as usize][r as usize] - 1,
-                cache,
+                    names,
+                    flows,
+                    dist,
+                    r,
+                    &rr,
+                    time_remaining - dist[current_valve as usize][r as usize] - 1,
+                    cache,
                 )
         })
         .max()
@@ -99,41 +102,47 @@ impl days::Day for Day {
         }
     }
 
-    fn part1(&mut self, input: &Self::Input) -> String {
-        dfs(
-            &input.1,
-            &input.3,
-            input.0.iter().position(|x| x == &"AA".to_string()).unwrap() as u64,
-            &input
-                .1
-                .iter()
-                .enumerate()
-                .filter(|(_, f)| **f > 0)
-                .map(|(i, _)| i as u64)
-                .collect(),
-            30,
-            &mut self.part1_cache,
+    fn part1(&mut self, input: &Self::Input) -> (String, bool) {
+        (
+            dfs(
+                &input.1,
+                &input.3,
+                input.0.iter().position(|x| x == &"AA".to_string()).unwrap() as u64,
+                &input
+                    .1
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, f)| **f > 0)
+                    .map(|(i, _)| i as u64)
+                    .collect(),
+                30,
+                &mut self.part1_cache,
+            )
+            .to_string(),
+            true,
         )
-        .to_string()
     }
 
-    fn part2(&mut self, input: &Self::Input) -> String {
-        dfs_part2(
-            &input.0,
-            &input.1,
-            &input.3,
-            input.0.iter().position(|x| x == &"AA".to_string()).unwrap() as u64,
-            &input
-                .1
-                .iter()
-                .enumerate()
-                .filter(|(_, f)| **f > 0)
-                .map(|(i, _)| i as u64)
-                .collect(),
-            26,
-            &mut self.part1_cache,
+    fn part2(&mut self, input: &Self::Input) -> (String, bool) {
+        (
+            dfs_part2(
+                &input.0,
+                &input.1,
+                &input.3,
+                input.0.iter().position(|x| x == &"AA".to_string()).unwrap() as u64,
+                &input
+                    .1
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, f)| **f > 0)
+                    .map(|(i, _)| i as u64)
+                    .collect(),
+                26,
+                &mut self.part1_cache,
+            )
+            .to_string(),
+            true,
         )
-        .to_string()
     }
 
     fn parse_input(&mut self, input: &String) -> Self::Input {

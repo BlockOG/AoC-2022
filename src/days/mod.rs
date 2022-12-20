@@ -4,6 +4,7 @@ use std::{fs::File, io::Read, time::Instant};
 
 use colored::*;
 use paste::paste;
+use regex::Regex;
 
 macro_rules! run_day {
     ($($day:expr),+) => {
@@ -34,8 +35,8 @@ pub trait Day {
 
     fn get_num(&self) -> u8;
     fn new() -> Self;
-    fn part1(&mut self, input: &Self::Input) -> String;
-    fn part2(&mut self, input: &Self::Input) -> String;
+    fn part1(&mut self, input: &Self::Input) -> (String, bool);
+    fn part2(&mut self, input: &Self::Input) -> (String, bool);
     fn parse_input(&mut self, input: &String) -> Self::Input;
 }
 
@@ -140,8 +141,11 @@ fn run_impled_day(
     }
 
     let mut completed = 0;
+    let mut part1_answer = String::new();
+    let mut part2_answer = String::new();
+    let answer_regex = Regex::new(r"<p>Your puzzle answer was <code>(\w+)</code>\.</p>").unwrap();
     if !dont_submit {
-        completed = match client
+        match client
             .get(&format!(
                 "https://adventofcode.com/2022/day/{}",
                 day.get_num()
@@ -154,7 +158,17 @@ fn run_impled_day(
             .send()
         {
             Ok(response) => match response.text() {
-                Ok(text) => text.matches("Your puzzle answer was").count(),
+                Ok(text) => {
+                    let mut matches = answer_regex.captures_iter(&text);
+                    if let Some(match1) = matches.next() {
+                        part1_answer = match1[1].to_string();
+                        completed += 1;
+                    }
+                    if let Some(match2) = matches.next() {
+                        part2_answer = match2[1].to_string();
+                        completed += 1;
+                    }
+                },
                 Err(_) => {
                     println!("{}", "Could not get star amount".bold().red());
                     return None;
@@ -262,31 +276,44 @@ fn run_impled_day(
             )
         );
     }
-    if completed == 2 {
-        println!("{}", "Day is already completed!".bold().green());
-    }
 
     let start_part1 = Instant::now();
     let part1 = day.part1(&parsed_input);
     let elapsed_part1 = start_part1.elapsed().as_nanos();
     if !dont_print {
-        println!("{} {}", "Part 1:".bold(), part1);
+        if part1_answer.is_empty() || !part1.1 {
+            println!("{} {}", "Part 1:".bold(), part1.0);
+        } else {
+            if part1.0 == part1_answer {
+                println!("{} {}", "Part 1:".bold(), part1.0.green());
+            } else {
+                println!("{} {}", "Part 1:".bold(), part1.0.red());
+            }
+        }
     }
     let mut failed_submission = false;
     if !dont_submit && completed < 1 {
         println!("{}", "Submitting part 1...".bold());
-        failed_submission = !submit(day, 1, &part1, &session, client);
+        failed_submission = !submit(day, 1, &part1.0, &session, client);
     }
 
     let start_part2 = Instant::now();
     let part2 = day.part2(&parsed_input);
     let elapsed_part2 = start_part2.elapsed().as_nanos();
     if !dont_print {
-        println!("{} {}", "Part 2:".bold(), part2);
+        if part2_answer.is_empty() || !part2.1 {
+            println!("{} {}", "Part 2:".bold(), part2.0);
+        } else {
+            if part2.0 == part2_answer {
+                println!("{} {}", "Part 2:".bold(), part2.0.green());
+            } else {
+                println!("{} {}", "Part 2:".bold(), part2.0.red());
+            }
+        }
     }
     if !dont_submit && completed < 2 && !failed_submission {
         println!("{}", "Submitting part 2...".bold());
-        if submit(day, 2, &part2, &session, client) {
+        if submit(day, 2, &part2.0, &session, client) {
             println!("{}", "Day completed!".bold().green());
         }
     }

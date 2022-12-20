@@ -72,7 +72,7 @@ impl days::Day for Day {
         Self {}
     }
 
-    fn part1(&mut self, input: &Self::Input) -> String {
+    fn part1(&mut self, input: &Self::Input) -> (String, bool) {
         let rucksacks = input
             .iter()
             .map(|s| {
@@ -89,10 +89,10 @@ impl days::Day for Day {
                 }
             }
         }
-        priority.to_string()
+        (priority.to_string(), true)
     }
 
-    fn part2(&mut self, input: &Self::Input) -> String {
+    fn part2(&mut self, input: &Self::Input) -> (String, bool) {
         let rucksack_groups = input.chunks(3).collect::<Vec<&[String]>>();
         let mut priority = 0;
         for group in rucksack_groups {
@@ -103,7 +103,7 @@ impl days::Day for Day {
                 }
             }
         }
-        priority.to_string()
+        (priority.to_string(), true)
     }
 
     fn parse_input(&mut self, input: &String) -> Self::Input {

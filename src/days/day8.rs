@@ -79,7 +79,7 @@ impl days::Day for Day {
         Self {}
     }
 
-    fn part1(&mut self, input: &Self::Input) -> String {
+    fn part1(&mut self, input: &Self::Input) -> (String, bool) {
         let mut sum = 0;
         for y in 0..input.len() {
             for x in 0..input[y].len() {
@@ -88,10 +88,10 @@ impl days::Day for Day {
                 }
             }
         }
-        sum.to_string()
+        (sum.to_string(), true)
     }
 
-    fn part2(&mut self, input: &Self::Input) -> String {
+    fn part2(&mut self, input: &Self::Input) -> (String, bool) {
         let mut max_score = 0;
         for y in 0..input.len() {
             for x in 0..input[y].len() {
@@ -101,7 +101,7 @@ impl days::Day for Day {
                 }
             }
         }
-        max_score.to_string()
+        (max_score.to_string(), true)
     }
 
     fn parse_input(&mut self, input: &String) -> Self::Input {

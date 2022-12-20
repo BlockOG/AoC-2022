@@ -36,26 +36,32 @@ impl days::Day for Day {
         Self {}
     }
 
-    fn part1(&mut self, input: &Self::Input) -> String {
+    fn part1(&mut self, input: &Self::Input) -> (String, bool) {
         let mut sizes = HashMap::new();
         get_size("/".to_string(), input, &mut sizes);
-        sizes
-            .values()
-            .filter(|&&size| size < 100000)
-            .sum::<u32>()
-            .to_string()
+        (
+            sizes
+                .values()
+                .filter(|&&size| size < 100000)
+                .sum::<u32>()
+                .to_string(),
+            true,
+        )
     }
 
-    fn part2(&mut self, input: &Self::Input) -> String {
+    fn part2(&mut self, input: &Self::Input) -> (String, bool) {
         let mut sizes = HashMap::new();
         let delete_size = 30000000 - (70000000 - get_size("/".to_string(), input, &mut sizes));
-        sizes
-            .iter()
-            .map(|x| x.1)
-            .filter(|&&x| x >= delete_size)
-            .min()
-            .unwrap()
-            .to_string()
+        (
+            sizes
+                .iter()
+                .map(|x| x.1)
+                .filter(|&&x| x >= delete_size)
+                .min()
+                .unwrap()
+                .to_string(),
+            true,
+        )
     }
 
     fn parse_input(&mut self, input: &String) -> Self::Input {

@@ -25,24 +25,24 @@ impl days::Day for Day {
         Self {}
     }
 
-    fn part1(&mut self, input: &Self::Input) -> String {
+    fn part1(&mut self, input: &Self::Input) -> (String, bool) {
         let mut contained = 0;
         for (a, b) in input.iter() {
             if any_contains_other(a, b) {
                 contained += 1;
             }
         }
-        contained.to_string()
+        (contained.to_string(), true)
     }
 
-    fn part2(&mut self, input: &Self::Input) -> String {
+    fn part2(&mut self, input: &Self::Input) -> (String, bool) {
         let mut overlapped = 0;
         for (a, b) in input.iter() {
             if overlaps(a, b) {
                 overlapped += 1;
             }
         }
-        overlapped.to_string()
+        (overlapped.to_string(), true)
     }
 
     fn parse_input(&mut self, input: &String) -> Self::Input {

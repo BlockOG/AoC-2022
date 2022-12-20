@@ -15,24 +15,30 @@ impl days::Day for Day {
         Self {}
     }
 
-    fn part1(&mut self, input: &Self::Input) -> String {
-        input
-            .split("\n\n")
-            .map(|s| s.lines().map(|l| l.parse::<i32>().unwrap()).sum::<i32>())
-            .max()
-            .unwrap()
-            .to_string()
+    fn part1(&mut self, input: &Self::Input) -> (String, bool) {
+        (
+            input
+                .split("\n\n")
+                .map(|s| s.lines().map(|l| l.parse::<i32>().unwrap()).sum::<i32>())
+                .max()
+                .unwrap()
+                .to_string(),
+            true,
+        )
     }
 
-    fn part2(&mut self, input: &Self::Input) -> String {
-        input
-            .split("\n\n")
-            .map(|s| s.lines().map(|l| l.parse::<i32>().unwrap()).sum::<i32>())
-            .sorted()
-            .rev()
-            .take(3)
-            .sum::<i32>()
-            .to_string()
+    fn part2(&mut self, input: &Self::Input) -> (String, bool) {
+        (
+            input
+                .split("\n\n")
+                .map(|s| s.lines().map(|l| l.parse::<i32>().unwrap()).sum::<i32>())
+                .sorted()
+                .rev()
+                .take(3)
+                .sum::<i32>()
+                .to_string(),
+            true,
+        )
     }
 
     fn parse_input(&mut self, input: &String) -> Self::Input {
