@@ -1,5 +1,6 @@
 use clap::{arg, command};
 use colored::*;
+use reqwest::blocking::Client;
 
 use crate::days::{nanos_to_string, run_day};
 
@@ -38,7 +39,7 @@ fn main() {
     let dont_print = *matches.get_one::<bool>("dontprint").unwrap();
     let dontsubmit = *matches.get_one::<bool>("dontsubmit").unwrap();
     let dontinput = *matches.get_one::<bool>("dontinput").unwrap();
-    let client = reqwest::blocking::Client::new();
+    let client = Client::new();
     if day == "all" {
         let mut total_time = (0, 0, 0);
         for day in 1..=25 {
