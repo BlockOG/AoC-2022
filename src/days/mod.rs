@@ -87,7 +87,8 @@ fn submit(
     {
         Ok(resp) => {
             let resp = resp.text().unwrap();
-            let mut file = File::create(format!("logs/submit{}_{}.txt", day.get_num(), level)).unwrap();
+            let mut file =
+                File::create(format!("logs/submit{}_{}.txt", day.get_num(), level)).unwrap();
             file.write_all(resp.as_bytes()).unwrap();
             if resp.contains("one gold star") {
                 println!("{}", "Answer correct!".bold().green());
@@ -96,11 +97,11 @@ fn submit(
                 println!("{}", "Answer incorrect :(".bold().red());
                 return false;
             }
-        },
+        }
         Err(_) => {
             println!("{}", "Could not submit answer".bold().red());
             return false;
-        },
+        }
     };
 }
 
@@ -168,7 +169,7 @@ fn run_impled_day(
                         part2_answer = match2[1].to_string();
                         completed += 1;
                     }
-                },
+                }
                 Err(_) => {
                     println!("{}", "Could not get star amount".bold().red());
                     return None;
@@ -266,15 +267,14 @@ fn run_impled_day(
     let parsed_input = day.parse_input(&input);
     let elapsed_parsing = start_parsing.elapsed().as_nanos();
 
-    println!("{}", format!("Day {}", day.get_num()).bold().green());
     if completed > 0 {
         println!(
-            "{}",
-            format!(
-                "You have {} on this day",
-                "*".repeat(completed).bold().yellow()
-            )
+            "{} {}",
+            format!("Day {}", day.get_num()).bold().green(),
+            "*".repeat(completed).bold().yellow()
         );
+    } else {
+        println!("{}", format!("Day {}", day.get_num()).bold().green());
     }
 
     let start_part1 = Instant::now();
