@@ -276,17 +276,21 @@ fn search(factory: &Blueprint, minutes: i32) -> usize {
     *cache.get(&minutes).unwrap()
 }
 
-pub struct Day {}
+pub struct Day {
+    day_num: u8,
+}
 
 impl days::Day for Day {
     type Input = Vec<Blueprint>;
 
     fn get_num(&self) -> u8 {
-        19
+        self.day_num
     }
 
-    fn new() -> Self {
-        Self {}
+    fn new(day_num: u8) -> Self {
+        Self {
+            day_num
+        }
     }
 
     fn part1(&mut self, input: &Self::Input) -> (String, bool) {

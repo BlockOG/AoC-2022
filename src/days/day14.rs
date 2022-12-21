@@ -90,21 +90,25 @@ pub struct Day {
     blocksp2: Vec<Vec<bool>>,
 
     max_y: usize,
+
+    day_num: u8,
 }
 
 impl days::Day for Day {
     type Input = ();
 
     fn get_num(&self) -> u8 {
-        14
+        self.day_num
     }
 
-    fn new() -> Self {
+    fn new(day_num: u8) -> Self {
         Self {
             blocksp1: vec![true; 600 * 200],
             blocksp2: vec![vec![false; 600]; 200],
 
             max_y: 0,
+
+            day_num,
         }
     }
 

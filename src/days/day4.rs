@@ -12,17 +12,21 @@ fn overlaps(a: &(i32, i32), b: &(i32, i32)) -> bool {
     a.0 <= b.0 && a.1 >= b.0 || b.0 <= a.0 && b.1 >= a.0
 }
 
-pub struct Day {}
+pub struct Day {
+    day_num: u8,
+}
 
 impl days::Day for Day {
     type Input = Vec<((i32, i32), (i32, i32))>;
 
     fn get_num(&self) -> u8 {
-        4
+        self.day_num
     }
 
-    fn new() -> Self {
-        Self {}
+    fn new(day_num: u8) -> Self {
+        Self {
+            day_num
+        }
     }
 
     fn part1(&mut self, input: &Self::Input) -> (String, bool) {

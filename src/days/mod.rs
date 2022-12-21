@@ -19,7 +19,7 @@ macro_rules! run_day {
             }
             return match day_num {
                 $(
-                    $day => run_impled_day(paste! { &mut [<day $day>]::Day::new() }, time, dont_print, dontsubmit, dontinput, client),
+                    $day => run_impled_day(paste! { &mut [<day $day>]::Day::new(day_num) }, time, dont_print, dontsubmit, dontinput, client),
                 )+
                 _ => {
                     println!("{}", format!("Day {} not implemented yet", day_num).bold().red());
@@ -34,7 +34,7 @@ pub trait Day {
     type Input;
 
     fn get_num(&self) -> u8;
-    fn new() -> Self;
+    fn new(day_num: u8) -> Self;
     fn part1(&mut self, input: &Self::Input) -> (String, bool);
     fn part2(&mut self, input: &Self::Input) -> (String, bool);
     fn parse_input(&mut self, input: &String) -> Self::Input;
@@ -56,9 +56,13 @@ fn nanos_to_most_convenient(nanos: u128) -> (f64, String) {
     (nanos, unit.to_string())
 }
 
-pub fn nanos_to_string(nanos: u128) -> String {
+pub fn nanos_to_string(nanos: u128) -> ColoredString {
     let (num, unit) = nanos_to_most_convenient(nanos);
-    format!("{} {}", num, unit)
+    if nanos < 500_000_000 {
+        format!("{} {}", num, unit).white()
+    } else {
+        format!("{} {}", num, unit).red()
+    }
 }
 
 fn submit(

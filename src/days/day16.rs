@@ -87,18 +87,20 @@ fn dfs_part2(
 
 pub struct Day {
     part1_cache: HashMap<(u64, Vec<u64>, u64), u64>,
+    day_num: u8,
 }
 
 impl days::Day for Day {
     type Input = (Vec<String>, Vec<u64>, Vec<Vec<String>>, Vec<Vec<u64>>);
 
     fn get_num(&self) -> u8 {
-        16
+        self.day_num
     }
 
-    fn new() -> Self {
+    fn new(day_num: u8) -> Self {
         Self {
             part1_cache: HashMap::new(),
+            day_num,
         }
     }
 

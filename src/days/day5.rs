@@ -10,17 +10,21 @@ fn sub_strings(source: &str, sub_size: usize) -> Vec<String> {
         .collect::<Vec<_>>()
 }
 
-pub struct Day {}
+pub struct Day {
+    day_num: u8,
+}
 
 impl days::Day for Day {
     type Input = (String, String);
 
     fn get_num(&self) -> u8 {
-        5
+        self.day_num
     }
 
-    fn new() -> Self {
-        Self {}
+    fn new(day_num: u8) -> Self {
+        Self {
+            day_num
+        }
     }
 
     fn part1(&mut self, input: &Self::Input) -> (String, bool) {
