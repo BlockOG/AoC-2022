@@ -226,7 +226,7 @@ fn run_impled_day(
                     .send()
                 {
                     Ok(response) => match response.text() {
-                        Ok(text) => text.trim().to_string(),
+                        Ok(text) => text.trim_end().to_string(),
                         Err(_) => {
                             println!("{}", "Could not read input".bold().red());
                             return None;
@@ -344,4 +344,4 @@ fn run_impled_day(
     Some((elapsed_parsing, elapsed_part1, elapsed_part2))
 }
 
-run_day!(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21);
+run_day!(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23);
