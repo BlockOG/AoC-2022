@@ -173,6 +173,9 @@ fn run_impled_day(
                         part2_answer = match2[1].to_string();
                         completed += 1;
                     }
+                    if text.contains("<p class=\"day-success\">Both parts of this puzzle are complete! They provide two gold stars: **</p>") {
+                        completed = 2;
+                    }
                 }
                 Err(_) => {
                     println!("{}", "Could not get star amount".bold().red());
