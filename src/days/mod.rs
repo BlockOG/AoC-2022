@@ -148,7 +148,7 @@ fn run_impled_day(
     let mut completed = 0;
     let mut part1_answer = String::new();
     let mut part2_answer = String::new();
-    let answer_regex = Regex::new(r"<p>Your puzzle answer was <code>(\w+)</code>\.</p>").unwrap();
+    let answer_regex = Regex::new(r"<p>Your puzzle answer was <code>(.+)</code>\.</p>").unwrap();
     if !dont_submit {
         match client
             .get(&format!(
@@ -297,7 +297,7 @@ fn run_impled_day(
         }
     }
     let mut failed_submission = false;
-    if !dont_submit && completed < 1 {
+    if part1.1 && !dont_submit && completed < 1 {
         println!("{}", "Submitting part 1...".bold());
         failed_submission = !submit(day, 1, &part1.0, &session, client);
     }
@@ -317,7 +317,7 @@ fn run_impled_day(
             }
         }
     }
-    if !dont_submit && completed < 2 && !failed_submission {
+    if part2.1 && !dont_submit && completed < 2 && !failed_submission {
         println!("{}", "Submitting part 2...".bold());
         if submit(day, 2, &part2.0, &session, client) {
             println!("{}", "Day completed!".bold().green());
